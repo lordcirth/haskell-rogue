@@ -7,6 +7,7 @@ module Main where
 -- import other files from this project:
 -- Define GameState structure & initialState
 import qualified GameState as GS
+import qualified Draw as UI
 
 
 --Brick imports
@@ -33,29 +34,29 @@ theMap = A.attrMap V.defAttr
 
 
 -- Define how Brick should act
-theApp :: M.App GameState V.Event ()
+theApp :: BMain.App GameState V.Event ()
 theApp =
-    M.App {
-        -- drawUI :: gameState -> [Widget]
-        M.appDraw = drawUI
-      , M.appChooseCursor = M.showFirstCursor
+    BMain.App {
+        -- UI.drawUI :: gameState -> [Widget]
+        BMain.appDraw = UI.drawUI
+      , BMain.appChooseCursor = BMain.showFirstCursor
 
         -- function which takes gameState & an Event and returns mutated gameState
-      , M.appHandleEvent = handleInput
-      , M.appStartEvent = return
-      , M.appAttrMap = const theMap
-      , M.appLiftVtyEvent = id
+      , BMain.appHandleEvent = handleInput
+      , BMain.appStartEvent = return
+      , BMain.appAttrMap = const theMap
+      , BMain.appLiftVtyEvent = id
       }
 
 handleInput :: D.Dialog Class -> V.Event -> T.EventM () (T.Next (D.Dialog Class))
 handleInput d ev =
     case ev of
-        V.EvKey V.KEsc [] -> M.halt d
-        V.EvKey V.KEnter [] -> M.halt d
-        _ -> M.continue =<< D.handleDialogEvent ev d
+        V.EvKey V.KEsc [] -> BMain.halt d
+        V.EvKey V.KEnter [] -> BMain.halt d
+        _ -> BMain.continue =<< D.handleDialogEvent ev d
 
 
 main :: IO ()
 main = do
-    dialog <- M.defaultMain theApp GS.initialState
+    dialog <- BMain.defaultMain theApp GS.initialState
     putStrLn $ "You chose: " ++ show (D.dialogSelection dialog)

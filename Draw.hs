@@ -1,3 +1,8 @@
+module Draw
+    ( drawUI
+    )
+where
+
 import qualified GameState as GS
 -- import qualified Graphics.Vty as V
 -- import qualified Brick.Widgets.Dialog as D
