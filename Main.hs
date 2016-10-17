@@ -8,12 +8,13 @@ module Main where
 -- Define GameState structure & initialState
 import qualified GameState as GS
 import qualified Draw as UI
+import qualified Input as IN
 
 
 --Brick imports
 import qualified Graphics.Vty as V
 import qualified Brick.Widgets.Dialog as D
-import qualified Brick.Widgets.Center as C
+-- import qualified Brick.Widgets.Center as C
 import qualified Brick.Main as BMain
 
 import Brick.Types
@@ -34,7 +35,7 @@ theMap = A.attrMap V.defAttr
 
 
 -- Define how Brick should act
-theApp :: BMain.App GameState V.Event ()
+theApp :: BMain.App GS.GameState V.Event ()
 theApp =
     BMain.App {
         -- UI.drawUI :: gameState -> [Widget]
@@ -42,21 +43,13 @@ theApp =
       , BMain.appChooseCursor = BMain.showFirstCursor
 
         -- function which takes gameState & an Event and returns mutated gameState
-      , BMain.appHandleEvent = handleInput
+      , BMain.appHandleEvent = IN.handleInput
       , BMain.appStartEvent = return
       , BMain.appAttrMap = const theMap
       , BMain.appLiftVtyEvent = id
       }
 
-handleInput :: D.Dialog Class -> V.Event -> T.EventM () (T.Next (D.Dialog Class))
-handleInput d ev =
-    case ev of
-        V.EvKey V.KEsc [] -> BMain.halt d
-        V.EvKey V.KEnter [] -> BMain.halt d
-        _ -> BMain.continue =<< D.handleDialogEvent ev d
-
-
 main :: IO ()
 main = do
     dialog <- BMain.defaultMain theApp GS.initialState
-    putStrLn $ "You chose: " ++ show (D.dialogSelection dialog)
+    putStrLn $ "End"
