@@ -13,7 +13,7 @@ import qualified GameState as GS
 import qualified Graphics.Vty as V
 import qualified Brick.Widgets.Dialog as D
 import qualified Brick.Widgets.Center as C
-import qualified Brick.Main as M
+import qualified Brick.Main as BMain
 
 import Brick.Types
   ( Widget
@@ -35,17 +35,17 @@ theMap = A.attrMap V.defAttr
 -- Define how Brick should act
 theApp :: M.App GameState V.Event ()
 theApp =
-    M.App { 
+    M.App {
         -- drawUI :: gameState -> [Widget]
-        M.appDraw = drawUI 
+        M.appDraw = drawUI
       , M.appChooseCursor = M.showFirstCursor
 
         -- function which takes gameState & an Event and returns mutated gameState
-      , M.appHandleEvent = handleInput 
-      , M.appStartEvent = return             
-      , M.appAttrMap = const theMap          
-      , M.appLiftVtyEvent = id               
-      }                                      
+      , M.appHandleEvent = handleInput
+      , M.appStartEvent = return
+      , M.appAttrMap = const theMap
+      , M.appLiftVtyEvent = id
+      }
 
 handleInput :: D.Dialog Class -> V.Event -> T.EventM () (T.Next (D.Dialog Class))
 handleInput d ev =

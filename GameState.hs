@@ -9,7 +9,7 @@ data Tile = Tile { walkable :: Bool
                  , display  :: Char
                  }
 
--- the game board / grid
+-- the game emptyBoard / grid
 data Board = Board  { tiles :: M.Map (Int, Int) Tile
                     }
 
@@ -25,10 +25,10 @@ wallTile    :: Tile
 wallTile    = Tile False '#'
 
 -- return a 8x8 of floor tiles
-board :: Board
-board = Board $ 
+emptyBoard :: Board
+emptyBoard = Board $
     M.fromList (zip pairs [floorTile])
     where pairs = [ (x,y) | x <- [0..8], y <- [0..8] ]
- 
+
 initialState :: GameState
-initialState = GameState { gameBoard = board, turnNum = 0 } 
+initialState = GameState { gameBoard = emptyBoard, turnNum = 0 }
