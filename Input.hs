@@ -15,8 +15,8 @@ import qualified Brick.Types as T
 handleInput :: GS.GameState -> V.Event -> T.EventM () (T.Next (GS.GameState))
 handleInput gs ev =
     case ev of
-        V.EvKey V.KEsc [] -> BMain.halt gs
+        V.EvKey V.KEsc []   -> BMain.halt gs
         V.EvKey V.KEnter [] -> BMain.halt gs
 
         --else do nothing
-        _ -> BMain.continue gs
+        _                   -> BMain.continue gs
