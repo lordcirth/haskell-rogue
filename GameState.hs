@@ -29,8 +29,8 @@ wallTile    = Tile False '#'
 -- return a grid of floor tiles
 emptyBoard :: Int -> Int -> Board
 emptyBoard sizeX sizeY = Board sizeX sizeY $
-    M.fromList (zip pairs [floorTile])
-    where pairs = [ (x,y) | x <- [0..sizeX], y <- [0..sizeY] ]
+    M.fromList (zip pairs (repeat floorTile) )
+    where pairs = [ (x,y) | x <- [1..sizeX], y <- [1..sizeY] ]
 
 initialState :: GameState
-initialState = GameState { gameBoard = ( emptyBoard 8 8), turnNum = 0 }
+initialState = GameState { gameBoard = ( emptyBoard 16 16), turnNum = 0 }
