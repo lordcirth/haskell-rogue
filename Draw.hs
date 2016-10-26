@@ -31,11 +31,16 @@ drawBoard :: GS.Board -> Widget ()
 drawBoard board =
     str $ boardAsString board
 
+
 boardAsString :: GS.Board -> String
 boardAsString board =
     stringGrid (GS.x board) (GS.y board) charMap
     where
         charMap = fmap (renderTile) $ GS.tiles board
+
+charMap :: M.Map (Int, Int) GS.Tile -> M.Map (Int, Int) Char
+charMap board = fmap (renderTile) board
+
 
 -- This is probably bad
 stringGrid :: Int -> Int -> M.Map (Int, Int) Char -> String
@@ -43,7 +48,7 @@ stringGrid sizeX sizeY mapGrid =
     unlines $ chop sizeX string
     where
        string = [ fromJust $ M.lookup (x,y) mapGrid | x <- [1..sizeX], y <- [1..sizeY] ] :: String
--- TODO: Split, then unlines
+
 
 chop :: Int -> String -> [String]
 chop sizeX []       = []
@@ -56,10 +61,4 @@ chop sizeX string   =
 -- Later we'll need to overlay creatures, etc
 renderTile :: GS.Tile -> Char
 renderTile tile =
-    GS.display tile
-
--- D.Dialog Class = gameState passed by Brick!
--- ui_chooseClass :: D.Dialog Class -> Widget ()
--- ui_chooseClass classChoice =
---    D.renderDialog classChoice $ str "Choose your class"
-
+    GS.tDisplay tile
