@@ -24,23 +24,38 @@ import Brick.Widgets.Core
 -- return the list of UI elements (Widgets)
 drawUI :: GS.GameState -> [Widget ()]
 drawUI gs =
-    [drawBoard $ GS.gameBoard gs]
+    [drawBoard gs]
 
 
-drawBoard :: GS.Board -> Widget ()
-drawBoard board =
-    str $ boardAsString board
+drawBoard :: GS.GameState -> Widget ()
+drawBoard gs =
+    str $ boardAsString gs
 
 
-boardAsString :: GS.Board -> String
-boardAsString board =
-    stringGrid (GS.x board) (GS.y board) charMap
+boardAsString :: GS.GameState -> String
+boardAsString gs =
+    stringGrid (x) (y) $ charMap gs
     where
-        charMap = fmap (renderTile) $ GS.tiles board
+       -- charMap = fmap (renderTile) $ GS.tiles board
+        x       = GS.x $ GS.gameBoard gs
+        y       = GS.y $ GS.gameBoard gs
 
-charMap :: M.Map (Int, Int) GS.Tile -> M.Map (Int, Int) Char
-charMap board = fmap (renderTile) board
+--TODO: Start using Lenses!
+charMap :: GS.GameState -> M.Map (Int, Int) Char
+charMap gs =
+    addPlayer gs ground
+    where
+        ground = fmap (renderTile) $ GS.tiles $ GS.gameBoard gs
 
+addPlayer :: GS.GameState -> M.Map (Int, Int) Char -> M.Map (Int, Int) Char
+addPlayer gs chars =
+    -- TODO: no-op so far
+   -- GS.tiles $ GS.gameBoard
+    M.insert (playerLocation) (playerChar) chars
+    where
+
+        playerChar = GS.cDisplay $ GS.cInfo $ GS.player $ gs
+        playerLocation = GS.position $ GS.cInfo $ GS.player $ gs
 
 -- This is probably bad
 stringGrid :: Int -> Int -> M.Map (Int, Int) Char -> String
