@@ -46,8 +46,12 @@ handleInput gs ev =
         -- V.EvKey (V.KChar 'a') [] ->
 
         -- TODO: Refactor movement into it's own function, matching here on all 4/8 directions?
-        -- Player wants to move down
-        V.EvKey V.KDown []  -> BMain.continue (fullGameTurn (playerMove (0,1) ) gs)
+        -- Can I do a group pattern match like that?
+        -- Maybe use numpad and match on number range!
+        V.EvKey V.KUp       []  -> BMain.continue (fullGameTurn (playerMove ( 0,-1) ) gs)
+        V.EvKey V.KDown     []  -> BMain.continue (fullGameTurn (playerMove ( 0, 1) ) gs)
+        V.EvKey V.KLeft     []  -> BMain.continue (fullGameTurn (playerMove (-1, 0) ) gs)
+        V.EvKey V.KRight    []  -> BMain.continue (fullGameTurn (playerMove ( 1, 0) ) gs)
 
         -- for a key which does nothing, do nothing (redraw identical)
         -- could optionally print "That key does nothing!" or something?

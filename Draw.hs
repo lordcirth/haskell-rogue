@@ -58,7 +58,7 @@ addPlayer gs chars =
 
 -- This is probably bad code, but it does work...
 -- The order we print it in here basically determines what the coord system is
---
+-- (1,1) is the top-left corner
 stringGrid :: Int -> Int -> M.Map (Int, Int) Char -> String
 stringGrid sizeX sizeY mapGrid =
     unlines $ chop sizeX string
