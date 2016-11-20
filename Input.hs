@@ -42,12 +42,10 @@ handleInput gs ev =
         -- the empty list [] is the list of mod keys
         V.EvKey V.KEsc []   -> BMain.halt gs    -- press ESC to quit
 
-        -- How to read normal keys:
-        -- V.EvKey (V.KChar 'a') [] ->
+        -- use numpad keys and match on number range to get movement
+        V.EvKey (V.KChar k) [] | k `elem` ['0'..'9'] -> BMain.continue (fullGameTurn (handleMoveInput k) gs)
 
-        -- TODO: Refactor movement into it's own function, matching here on all 4/8 directions?
-        -- Can I do a group pattern match like that?
-        -- Maybe use numpad and match on number range!
+        -- Or arrow key movement
         V.EvKey V.KUp       []  -> BMain.continue (fullGameTurn (playerMove ( 0,-1) ) gs)
         V.EvKey V.KDown     []  -> BMain.continue (fullGameTurn (playerMove ( 0, 1) ) gs)
         V.EvKey V.KLeft     []  -> BMain.continue (fullGameTurn (playerMove (-1, 0) ) gs)
@@ -56,6 +54,24 @@ handleInput gs ev =
         -- for a key which does nothing, do nothing (redraw identical)
         -- could optionally print "That key does nothing!" or something?
         _                   -> BMain.continue gs
+
+
+-- The player has requested to move in some direction.  Return an Action function which attempts the specific move
+handleMoveInput :: Char -> (Action)
+handleMoveInput k =
+    -- TODO: 5 = wait or something?
+    case k of
+        '1' -> playerMove (-1, 1)
+        '2' -> playerMove ( 0, 1)
+        '3' -> playerMove ( 1, 1)
+
+        '4' -> playerMove (-1, 0)
+        '5' -> playerMove ( 0, 0) -- 5 does nothing, wastes turn
+        '6' -> playerMove ( 1, 0)
+
+        '7' -> playerMove (-1,-1)
+        '8' -> playerMove ( 0,-1)
+        '9' -> playerMove ( 1,-1)
 
 
 -- run a full game turn, ie pre-turn, player turn, enemy turn, post-turn.
@@ -85,7 +101,7 @@ playerTurn  action gs =
 -- Takes current gameState, and direction to move ie (0,1)
 -- Maybe we moved, or maybe we print "you can't move there!", etc
 -- GameState should be the last argument, to make it easier to partially apply!
-playerMove :: (Int, Int) -> GameState -> ActionResult
+playerMove :: (Int, Int) -> (Action)
 playerMove move gs  =
     -- TODO: Check if that's actually a valid move, ie not into an enemy or wall
     ActionResult "player moved" True resulting_gs
