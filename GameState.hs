@@ -32,9 +32,10 @@ data Player = Player        { _cInfo     :: CreatureInfo
                             }
 
 -- The entire game state
-data GameState = GameState  { _gameBoard :: Board
-                            , _turnNum   :: Int
-                            , _player    :: Player
+data GameState = GameState  { _gameBoard    :: Board
+                            , _turnNum      :: Int
+                            , _player       :: Player
+                            , _messages     :: [String] -- Message buffer
                             }
 
 makeLenses '' Tile
@@ -64,9 +65,10 @@ initialPlayer = Player  { _cInfo =
                         }
 
 initialState :: GameState
-initialState = GameState    { _gameBoard = ( emptyBoard 16 16)
-                            , _turnNum = 0
-                            , _player = initialPlayer
+initialState = GameState    { _gameBoard    = ( emptyBoard 16 16)
+                            , _turnNum      = 0
+                            , _player       = initialPlayer
+                            , _messages    = []
                             }
 
 -- helper functions
