@@ -17,8 +17,8 @@ data Tile = Tile    { _walkable :: Bool
                     }
 
 -- the game emptyBoard / grid
-data Board = Board  { _x     :: Int
-                    , _y     :: Int
+data Board = Board  { _size_x     :: Int
+                    , _size_y     :: Int
                     , _tiles :: M.Map (Int, Int) Tile
                     }
 
@@ -50,6 +50,7 @@ wallTile    :: Tile
 wallTile    = Tile False '#'
 
 -- return a grid of floor tiles
+-- Note that the order we generate it here is irrelevant, if it's a square.
 emptyBoard :: Int -> Int -> Board
 emptyBoard sizeX sizeY = Board sizeX sizeY $
     M.fromList (zip pairs (repeat floorTile) )
@@ -68,7 +69,12 @@ initialState = GameState    { _gameBoard = ( emptyBoard 16 16)
                             , _player = initialPlayer
                             }
 
--- shortcut functions
+-- helper functions
+
+-- add two 2d positions
+addPos :: (Int, Int) -> (Int, Int) -> (Int, Int)
+addPos (x1,y1) (x2,y2) = (x1+x2, y1+y2)
+
 
 -- Apply a function to every tile and return the new GameState
 forAllTilesDo :: (Tile -> Tile) -> GameState -> GameState

@@ -35,7 +35,7 @@ drawBoard gs =
 
 boardAsString :: GameState -> String
 boardAsString gs =
-    stringGrid (board^.x) (board^.y) $ charMap gs
+    stringGrid (board^.size_x) (board^.size_y) $ charMap gs
     where
         board = gs^.gameBoard -- A lens
 
@@ -57,11 +57,15 @@ addPlayer gs chars =
 
 
 -- This is probably bad code, but it does work...
+-- The order we print it in here basically determines what the coord system is
+--
 stringGrid :: Int -> Int -> M.Map (Int, Int) Char -> String
 stringGrid sizeX sizeY mapGrid =
     unlines $ chop sizeX string
     where
-       string = [ fromJust $ M.lookup (x,y) mapGrid | x <- [1..sizeX], y <- [1..sizeY] ] :: String
+        -- generate all (x,y)'s, look them up, and put them in a string
+        -- put Y first so that X iterates first, making X horizontal and Y vertical
+        string = [ fromJust $ M.lookup (x,y) mapGrid | y <- [1..sizeY], x <- [1..sizeX] ] :: String
 
 -- used in stringGrid
 chop :: Int -> String -> [String]
