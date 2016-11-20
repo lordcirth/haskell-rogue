@@ -3,13 +3,10 @@ module Draw
     )
 where
 
+-- external libraries:
+import Control.Lens
 import qualified Data.Map as M
-import qualified GameState as GS
 import Data.Maybe
--- import qualified Graphics.Vty as V
--- import qualified Brick.Widgets.Dialog as D
--- import qualified Brick.Widgets.Center as C
--- import qualified Brick.Main as BMain
 
 import Brick.Types
   ( Widget
@@ -21,50 +18,52 @@ import Brick.Widgets.Core
 
   )
 
+-- My own files:
+import GameState
+
+
 -- return the list of UI elements (Widgets)
-drawUI :: GS.GameState -> [Widget ()]
+drawUI :: GameState -> [Widget ()]
 drawUI gs =
     [drawBoard gs]
 
 
-drawBoard :: GS.GameState -> Widget ()
+drawBoard :: GameState -> Widget ()
 drawBoard gs =
     str $ boardAsString gs
 
 
-boardAsString :: GS.GameState -> String
+boardAsString :: GameState -> String
 boardAsString gs =
-    stringGrid (x) (y) $ charMap gs
+    stringGrid (board^.x) (board^.y) $ charMap gs
     where
-       -- charMap = fmap (renderTile) $ GS.tiles board
-        x       = GS.x $ GS.gameBoard gs
-        y       = GS.y $ GS.gameBoard gs
+        board = gs^.gameBoard -- A lens
+
 
 --TODO: Start using Lenses!
-charMap :: GS.GameState -> M.Map (Int, Int) Char
+charMap :: GameState -> M.Map (Int, Int) Char
 charMap gs =
     addPlayer gs ground
     where
-        ground = fmap (renderTile) $ GS.tiles $ GS.gameBoard gs
+        ground = fmap (renderTile) (gs^.gameBoard.tiles)
 
-addPlayer :: GS.GameState -> M.Map (Int, Int) Char -> M.Map (Int, Int) Char
+
+addPlayer :: GameState -> M.Map (Int, Int) Char -> M.Map (Int, Int) Char
 addPlayer gs chars =
-    -- TODO: no-op so far
-   -- GS.tiles $ GS.gameBoard
     M.insert (playerLocation) (playerChar) chars
     where
+        playerChar      = gs^.player.cInfo.cDisplay -- what character to show
+        playerLocation  = gs^.player.cInfo.position -- where to render it
 
-        playerChar = GS.cDisplay $ GS.cInfo $ GS.player $ gs
-        playerLocation = GS.position $ GS.cInfo $ GS.player $ gs
 
--- This is probably bad
+-- This is probably bad code, but it does work...
 stringGrid :: Int -> Int -> M.Map (Int, Int) Char -> String
 stringGrid sizeX sizeY mapGrid =
     unlines $ chop sizeX string
     where
        string = [ fromJust $ M.lookup (x,y) mapGrid | x <- [1..sizeX], y <- [1..sizeY] ] :: String
 
-
+-- used in stringGrid
 chop :: Int -> String -> [String]
 chop sizeX []       = []
 chop sizeX string   =
@@ -73,7 +72,7 @@ chop sizeX string   =
         parts = splitAt sizeX string
 
 
--- Later we'll need to overlay creatures, etc
-renderTile :: GS.Tile -> Char
-renderTile tile =
-    GS.tDisplay tile
+-- Later we'll need to overlay multiple terrain effects, maybe?
+-- creatures, etc are rendered elsewhere, ie addPlayer
+renderTile :: Tile -> Char
+renderTile tile = tile^.tDisplay
