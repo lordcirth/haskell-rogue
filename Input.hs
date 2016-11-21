@@ -19,11 +19,12 @@ import Control.Lens
 import GameState
 
 --  The structure that all Actions must return
-data ActionResult = ActionResult    { _message      :: String -- A one-line string saying what happened
+data ActionResult = ActionResult    { --_message      :: String -- A one-line string saying what happened
+                                    -- merged into gameState by the action itself
 
                                     -- Has the player spent his turn? eg an invalid action doesn't count
                                     -- Also enables 'free actions' before your turn, in future
-                                    , _costsTurn    :: Bool
+                                      _costsTurn    :: Bool
 
                                     -- Resulting gameState - message gets merged into gamestate by 'fullGameTurn'
                                     , _gameState    :: GameState
@@ -77,15 +78,17 @@ handleMoveInput k =
 -- run a full game turn, ie pre-turn, player turn, enemy turn, post-turn.
 -- Currently, only the player exists.
 fullGameTurn :: (Action) -> GameState -> GameState
-fullGameTurn action gs =
-    let result = playerTurn action gs in
+fullGameTurn action gs
 
-        -- Return new gameState
-        result^.gameState
+        -- Player hasn't spent turn - free action or invalid
+        | not (result^.costsTurn)   = result^.gameState
 
+        -- Player has spent turn - normal action completed
         -- TODO: this is where to run enemy turns, etc
-        -- TODO: add a message-buffer to GameState, and store the message there
-        --      so it can be printed by Draw
+        | result^.costsTurn         = result^.gameState
+
+        where result = playerTurn action gs
+
 
 
 -- Arguments:
@@ -96,16 +99,26 @@ fullGameTurn action gs =
 playerTurn :: (Action) -> GameState -> ActionResult
 playerTurn  action gs =
     -- for the moment, we just do the action.
-    action gs
+     let result = action gs in
+      --  (result^.gameState)
+    result
+
 
 -- Takes current gameState, and direction to move ie (0,1)
 -- Maybe we moved, or maybe we print "you can't move there!", etc
--- GameState should be the last argument, to make it easier to partially apply!
+-- GameState should be the last argument of every Action, to make it easier to partially apply!
 playerMove :: (Int, Int) -> (Action)
 playerMove move gs  =
     -- TODO: Check if that's actually a valid move, ie not into an enemy or wall
-    ActionResult "player moved" True resulting_gs
+    -- Message string, did it cost the turn, new gamestate
+    -- Moving will not have a message later, just for testing.
+    ActionResult  True (addMessage "player moved" resulting_gs)
+    -- Return new gameState with message added
     where
         resulting_gs = over (player.cInfo.position) (addPos move) gs
 
-
+-- Append a message to the gamestate's buffer
+-- TODO: Drop old messages once it gets too long
+addMessage :: String -> GameState -> GameState
+addMessage message gs =
+    over (messages) ( ++ [message]) (gs)
