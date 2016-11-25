@@ -52,10 +52,19 @@ wallTile    = Tile False '#'
 
 -- return a grid of floor tiles
 -- Note that the order we generate it here is irrelevant, if it's a square.
-emptyBoard :: Int -> Int -> Board
-emptyBoard sizeX sizeY = Board sizeX sizeY $
+-- But, as defined in Draw.hs, X is horizontal and Y vertical, with (1,1) being top-left
+emptyBoard :: (Int, Int) -> Board
+emptyBoard (sizeX, sizeY) = Board sizeX sizeY $
     M.fromList (zip pairs (repeat floorTile) )
     where pairs = [ (x,y) | x <- [1..sizeX], y <- [1..sizeY] ]
+
+boardGen :: (Int, Int) -> Board
+boardGen (sizeX, sizeY) =
+    over (tiles) (M.insert (1,1) wallTile) (rawBoard)
+
+    where
+        rawBoard = ( emptyBoard (sizeX, sizeY) )
+
 
 initialPlayer :: Player
 initialPlayer = Player  { _cInfo =
@@ -65,8 +74,8 @@ initialPlayer = Player  { _cInfo =
                         }
 
 initialState :: GameState
-initialState = GameState    { _gameBoard    = ( emptyBoard 16 16)
-                            , _turnNum      = 0
+initialState = GameState    { _gameBoard    = ( boardGen (16, 16))
+                            , _turnNum      = 0 -- Not yet used for anything
                             , _player       = initialPlayer
                             , _messages    = []
                             }
