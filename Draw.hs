@@ -6,7 +6,7 @@ where
 -- external libraries:
 import Control.Lens
 import qualified Data.Map as M
-import Data.Maybe
+import Data.Maybe   -- fromJust
 
 import Brick.Types
     ( Widget

@@ -10,6 +10,8 @@ where
 import qualified Graphics.Vty as V
 import qualified Brick.Main as BMain
 import qualified Brick.Types as T
+import qualified Data.Map as M
+import Data.Maybe   -- fromJust
 
 
 -- external libraries:
@@ -108,15 +110,27 @@ playerTurn  action gs =
 -- Takes current gameState, and direction to move ie (0,1)
 -- Maybe we moved, or maybe we print "you can't move there!", etc
 -- GameState should be the last argument of every Action, to make it easier to partially apply!
+--      Or just use the Action alias
 playerMove :: (Int, Int) -> (Action)
-playerMove move gs  =
-    -- TODO: Check if that's actually a valid move, ie not into an enemy or wall
+playerMove move gs
+
+    -- Check if that's actually a valid move, ie not into an enemy or wall
+    -- TODO: Safer checks than fromJust!
+    | targetTile^.walkable  = result_success
+    | otherwise             = result_fail
+
     -- Message string, did it cost the turn, new gamestate
     -- Moving will not have a message later, just for testing.
-    ActionResult  True (addMessage "player moved" resulting_gs)
+    --ActionResult  True (addMessage "player moved" resulting_gs)
     -- Return new gameState with message added
     where
-        resulting_gs = over (player.cInfo.position) (addPos move) gs
+        playerPos       = player.cInfo.position      -- A lens, ie gs^.playerPos
+        resulting_gs    = over (playerPos) (addPos move) gs :: GameState
+        attempt         = addPos (gs^.player.cInfo.position) move   :: (Int, Int) -- doesn't it work with playerPos?!
+        targetTile      = fromJust $ M.lookup (attempt) (gs^.gameBoard.tiles)
+
+        result_success  = ActionResult True  (resulting_gs) -- No message for moving, too spammy
+        result_fail     = ActionResult False (addMessage "That's a wall!" gs) -- Return unchanged gs + message
 
 -- Append a message to the gamestate's buffer
 -- TODO: Drop old messages once it gets too long
