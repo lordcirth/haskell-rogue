@@ -23,7 +23,7 @@ import Brick.Types
 
 import qualified Brick.AttrMap as A
 import Brick.Util (on, bg)
-import qualified Brick.Types as T
+--import qualified Brick.Types as T
 
 --Theming boilerplate
 theMap :: A.AttrMap

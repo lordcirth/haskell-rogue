@@ -14,8 +14,7 @@ import Brick.Types
     )
 
 import Brick.Widgets.Core
-    ( padAll
-    , str     -- :: String -> Widget ()
+    (  str     -- :: String -> Widget ()
     , translateBy
     )
 
@@ -71,11 +70,11 @@ stringGrid sizeX sizeY mapGrid =
 
 -- used in stringGrid
 chop :: Int -> String -> [String]
-chop sizeX []       = []
-chop sizeX string   =
-    (fst parts):(chop sizeX $ snd parts)
+chop _      []       = []
+chop sizeX  string   =
+    (fst sParts):(chop sizeX $ snd sParts)
     where
-        parts = splitAt sizeX string
+        sParts = splitAt sizeX string
 
 
 -- Later we'll need to overlay multiple terrain effects, maybe?

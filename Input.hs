@@ -73,6 +73,7 @@ handleMoveInput k =
         '7' -> playerMove (-1,-1)
         '8' -> playerMove ( 0,-1)
         '9' -> playerMove ( 1,-1)
+        _   -> error "non-numeric input to handleMoveInput"
 
 
 -- run a full game turn, ie pre-turn, player turn, enemy turn, post-turn.
@@ -85,7 +86,7 @@ fullGameTurn action gs
 
         -- Player has spent turn - normal action completed
         -- TODO: this is where to run enemy turns, etc
-        | result^.costsTurn         = result^.gameState
+        | otherwise                 = result^.gameState
 
         where result = playerTurn action gs
 
