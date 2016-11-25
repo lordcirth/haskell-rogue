@@ -74,8 +74,9 @@ boardGen (sizeX, sizeY) =
     --emptyBoard (sizeX, sizeY)
     where
         startBoard  = ( emptyBoard (sizeX, sizeY) )                             :: Board
-        -- TODO: Other sides of box
-        boundingBox = [ (x,y) | x <- [1..sizeX], y <- [1,sizeY] ]               :: [(Int,Int)]
+
+        -- a list of positions that is the edges of the board
+        boundingBox = [ (x,y) | x <- [1..sizeX], y <- [1,sizeY] ] ++ [ (x,y) | x <- [1,sizeX], y <- [1..sizeY] ]
 
 
 initialPlayer :: Player
