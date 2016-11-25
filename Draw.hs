@@ -9,14 +9,15 @@ import qualified Data.Map as M
 import Data.Maybe
 
 import Brick.Types
-  ( Widget
-  )
+    ( Widget
+    , Location(..)
+    )
 
 import Brick.Widgets.Core
-  ( padAll
-  , str     -- :: String -> Widget ()
-
-  )
+    ( padAll
+    , str     -- :: String -> Widget ()
+    , translateBy
+    )
 
 -- My own files:
 import GameState
@@ -25,12 +26,13 @@ import GameState
 -- return the list of UI elements (Widgets)
 drawUI :: GameState -> [Widget ()]
 drawUI gs =
-    [drawBoard gs]
+    [printMessages gs, drawBoard gs]
 
 
 drawBoard :: GameState -> Widget ()
 drawBoard gs =
-    str $ boardAsString gs
+    let offset = Location (3,2) in
+    translateBy offset (str $ boardAsString gs)
 
 
 boardAsString :: GameState -> String
@@ -80,3 +82,10 @@ chop sizeX string   =
 -- creatures, etc are rendered elsewhere, ie addPlayer
 renderTile :: Tile -> Char
 renderTile tile = tile^.tDisplay
+
+
+-- print the message buffer
+printMessages :: GameState -> Widget ()
+printMessages gs =
+    let offset = Location (0,gs^.gameBoard.size_x + 4) in
+    translateBy offset (str $ unlines (gs^.messages))
