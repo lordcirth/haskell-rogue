@@ -59,16 +59,23 @@ emptyBoard (sizeX, sizeY) = Board sizeX sizeY $
     where pairs = [ (x,y) | x <- [1..sizeX], y <- [1..sizeY] ]
 
 -- Set the Tile type at the specified location
-setTile :: Tile -> (Int, Int) -> Board -> Board
+setTile :: Tile -> (Int, Int) -> M.Map (Int, Int) Tile -> M.Map (Int, Int) Tile
 setTile wantTile (x,y) startBoard =
-    over (tiles) (M.insert (x,y) wantTile) (startBoard)
+    M.insert (x,y) wantTile (startBoard)
+
+-- Set the tile type for a list of positions
+setTilesAt  :: Tile -> [(Int,Int)] -> M.Map (Int, Int) Tile -> M.Map (Int, Int) Tile
+setTilesAt tileType positions startTiles = foldl (flip $ setTile tileType) (startTiles) positions
 
 
 boardGen :: (Int, Int) -> Board
 boardGen (sizeX, sizeY) =
-    setTile wallTile (1,1) startBoard
+    over (tiles) (setTilesAt wallTile boundingBox) (startBoard)
+    --emptyBoard (sizeX, sizeY)
     where
-        startBoard = ( emptyBoard (sizeX, sizeY) )
+        startBoard  = ( emptyBoard (sizeX, sizeY) )                             :: Board
+        -- TODO: Other sides of box
+        boundingBox = [ (x,y) | x <- [1..sizeX], y <- [1,sizeY] ]               :: [(Int,Int)]
 
 
 initialPlayer :: Player
