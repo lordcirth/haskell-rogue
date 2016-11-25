@@ -58,12 +58,17 @@ emptyBoard (sizeX, sizeY) = Board sizeX sizeY $
     M.fromList (zip pairs (repeat floorTile) )
     where pairs = [ (x,y) | x <- [1..sizeX], y <- [1..sizeY] ]
 
+-- Set the Tile type at the specified location
+setTile :: Tile -> (Int, Int) -> Board -> Board
+setTile wantTile (x,y) startBoard =
+    over (tiles) (M.insert (x,y) wantTile) (startBoard)
+
+
 boardGen :: (Int, Int) -> Board
 boardGen (sizeX, sizeY) =
-    over (tiles) (M.insert (1,1) wallTile) (rawBoard)
-
+    setTile wallTile (1,1) startBoard
     where
-        rawBoard = ( emptyBoard (sizeX, sizeY) )
+        startBoard = ( emptyBoard (sizeX, sizeY) )
 
 
 initialPlayer :: Player
