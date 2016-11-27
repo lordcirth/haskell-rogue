@@ -39,6 +39,7 @@ data Player = Player        { _pInfo    :: CreatureInfo
 data GameState = GameState  { _gameBoard    :: Board
                             , _turnNum      :: Int
                             , _player       :: Player
+                            , _monsters     :: [Monster]
                             , _messages     :: [String] -- Message buffer
                             }
 makeLenses '' Tile
@@ -48,11 +49,19 @@ makeLenses '' Monster
 makeLenses '' Player
 makeLenses '' CreatureInfo
 
+
+-- Instances of Tile:
 floorTile   :: Tile
 floorTile   = Tile True '.'
 
 wallTile    :: Tile
 wallTile    = Tile False '#'
+
+
+-- Instances of Monster:
+monster_rat     :: (Int, Int) -> Monster
+monster_rat pos  = Monster "Rat" (CreatureInfo pos 'r')
+
 
 -- return a grid of floor tiles
 -- Note that the order we generate it here is irrelevant, if it's a square.
@@ -94,7 +103,8 @@ initialState :: GameState
 initialState = GameState    { _gameBoard    = ( boardGen (16, 16))
                             , _turnNum      = 0 -- Not yet used for anything
                             , _player       = initialPlayer
-                            , _messages    = []
+                            , _monsters     = []
+                            , _messages     = []
                             }
 
 -- helper functions
