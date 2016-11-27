@@ -25,7 +25,7 @@ import GameState
 -- return the list of UI elements (Widgets)
 drawUI :: GameState -> [Widget ()]
 drawUI gs =
-    [printMessages gs, drawBoard gs]
+    [printTurnNumber gs, printMessages gs, drawBoard gs]
 
 
 drawBoard :: GameState -> Widget ()
@@ -88,3 +88,11 @@ printMessages :: GameState -> Widget ()
 printMessages gs =
     let offset = Location (0,gs^.gameBoard.size_x + 4) in
     translateBy offset (str $ unlines (gs^.messages))
+
+printTurnNumber :: GameState -> Widget ()
+printTurnNumber gs =
+    let offset = Location (gs^.gameBoard.size_y + 4, 0)
+        turnString = "Turn: " ++ (show $ gs^.turnNum)
+    in
+
+    translateBy offset (str $ turnString)

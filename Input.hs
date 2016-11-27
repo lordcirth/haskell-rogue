@@ -88,11 +88,13 @@ fullGameTurn action gs
 
         -- Player has spent turn - normal action completed
         -- TODO: this is where to run enemy turns, etc
-        | otherwise                 = result^.gameState
+        | otherwise                 = incrementTurn(result^.gameState)
 
         where result = playerTurn action gs
 
-
+incrementTurn :: GameState -> GameState
+incrementTurn gs =
+    over (turnNum) (+1) gs
 
 -- Arguments:
 -- current gameState,
