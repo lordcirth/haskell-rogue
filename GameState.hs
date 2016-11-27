@@ -23,12 +23,16 @@ data Board = Board  { _size_x     :: Int
                     }
 
 -- Creatures:
-
 data CreatureInfo = CreatureInfo    { _position  :: (Int, Int)
                                     , _cDisplay  :: Char
                                     }
 
-data Player = Player        { _cInfo     :: CreatureInfo
+data Monster = Monster      { _name     :: String
+                            , _mInfo    :: CreatureInfo
+                            }
+
+
+data Player = Player        { _pInfo    :: CreatureInfo
                             }
 
 -- The entire game state
@@ -37,10 +41,10 @@ data GameState = GameState  { _gameBoard    :: Board
                             , _player       :: Player
                             , _messages     :: [String] -- Message buffer
                             }
-
 makeLenses '' Tile
 makeLenses '' Board
 makeLenses '' GameState
+makeLenses '' Monster
 makeLenses '' Player
 makeLenses '' CreatureInfo
 
@@ -80,7 +84,7 @@ boardGen (sizeX, sizeY) =
 
 
 initialPlayer :: Player
-initialPlayer = Player  { _cInfo =
+initialPlayer = Player  { _pInfo =
                           CreatureInfo  { _position = (4,4)
                                         , _cDisplay = '@'
                                         }

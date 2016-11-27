@@ -53,8 +53,8 @@ addPlayer :: GameState -> M.Map (Int, Int) Char -> M.Map (Int, Int) Char
 addPlayer gs chars =
     M.insert (playerLocation) (playerChar) chars
     where
-        playerChar      = gs^.player.cInfo.cDisplay -- what character to show
-        playerLocation  = gs^.player.cInfo.position -- where to render it
+        playerChar      = gs^.player.pInfo.cDisplay -- what character to show
+        playerLocation  = gs^.player.pInfo.position -- where to render it
 
 
 -- This is probably bad code, but it does work...

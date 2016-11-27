@@ -126,9 +126,9 @@ playerMove move gs
     --ActionResult  True (addMessage "player moved" resulting_gs)
     -- Return new gameState with message added
     where
-        playerPos       = player.cInfo.position      -- A lens, ie gs^.playerPos
+        playerPos       = player.pInfo.position      -- A lens, ie gs^.playerPos
         resulting_gs    = over (playerPos) (addPos move) gs :: GameState
-        attempt         = addPos (gs^.player.cInfo.position) move   :: (Int, Int) -- doesn't it work with playerPos?!
+        attempt         = addPos (gs^.player.pInfo.position) move   :: (Int, Int) -- doesn't it work with playerPos?!
         targetTile      = fromJust $ M.lookup (attempt) (gs^.gameBoard.tiles)
 
         result_success  = ActionResult True  (resulting_gs) -- No message for moving, too spammy
