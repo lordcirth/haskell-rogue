@@ -59,8 +59,8 @@ wallTile    = Tile False '#'
 
 
 -- Instances of Monster:
-monster_rat     :: (Int, Int) -> Monster
-monster_rat pos  = Monster "Rat" (CreatureInfo pos 'r')
+monster_guard     :: (Int, Int) -> Monster
+monster_guard pos  = Monster "Security Guard" (CreatureInfo pos 'g')
 
 
 -- return a grid of floor tiles
@@ -103,7 +103,7 @@ initialState :: GameState
 initialState = GameState    { _gameBoard    = ( boardGen (16, 16))
                             , _turnNum      = 0 -- Not yet used for anything
                             , _player       = initialPlayer
-                            , _monsters     = []
+                            , _monsters     = [monster_guard (8,8)]
                             , _messages     = []
                             }
 

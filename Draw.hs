@@ -41,10 +41,9 @@ boardAsString gs =
         board = gs^.gameBoard -- A lens
 
 
---TODO: Start using Lenses!
 charMap :: GameState -> M.Map (Int, Int) Char
 charMap gs =
-    addPlayer gs ground
+    addPlayer gs (addMonsters gs ground)
     where
         ground = fmap (renderTile) (gs^.gameBoard.tiles)
 
@@ -55,6 +54,18 @@ addPlayer gs chars =
     where
         playerChar      = gs^.player.pInfo.cDisplay -- what character to show
         playerLocation  = gs^.player.pInfo.position -- where to render it
+
+addMonsters :: GameState -> M.Map (Int, Int) Char -> M.Map (Int, Int) Char
+addMonsters gs chars =
+    foldl (addMonster) (chars) (gs^.monsters)
+--    M.insert (playerLocation) (playerChar) chars
+    where
+  --      monsterChar     = monster.mInfo.cDisplay -- what character to show
+    --    monsterLocation = monster.mInfo.position -- where to render it
+
+addMonster ::  M.Map (Int, Int) Char -> Monster -> M.Map (Int, Int) Char
+addMonster chars monster    =
+    M.insert (monster^.mInfo.position) (monster^.mInfo.cDisplay) chars
 
 
 -- This is probably bad code, but it does work...
