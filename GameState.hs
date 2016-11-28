@@ -17,14 +17,23 @@ data Tile = Tile    { _walkable :: Bool
                     }
 
 -- the game emptyBoard / grid
-data Board = Board  { _size_x     :: Int
-                    , _size_y     :: Int
-                    , _tiles :: M.Map (Int, Int) Tile
+data Board = Board  { _size_x   :: Int
+                    , _size_y   :: Int
+                    , _tiles    :: M.Map (Int, Int) Tile
                     }
 
+-- ie HP, MP
+data Stat = Stat  { _cap      :: Int
+                    , _current  :: Int
+                    }
+
+stat :: Int -> Stat
+stat a = Stat {_cap = a, _current = a}
+
 -- Creatures:
-data CreatureInfo = CreatureInfo    { _position  :: (Int, Int)
-                                    , _cDisplay  :: Char
+data CreatureInfo = CreatureInfo    { _position     :: (Int, Int)
+                                    , _cDisplay     :: Char
+                                    , _health       :: Stat
                                     }
 
 data Monster = Monster      { _name     :: String
@@ -57,10 +66,16 @@ floorTile   = Tile True '.'
 wallTile    :: Tile
 wallTile    = Tile False '#'
 
-
+-- TODO: Refactor Monsters into their own file once they grow
 -- Instances of Monster:
+cInfo_guard :: CreatureInfo
+cInfo_guard  = CreatureInfo  { _position = (33,33)
+                            , _cDisplay = 'g'
+                            , _health   = (stat 10)
+                            }
+
 monster_guard     :: (Int, Int) -> Monster
-monster_guard pos  = Monster "Security Guard" (CreatureInfo pos 'g')
+monster_guard pos = Monster "Security Guard" (CreatureInfo pos 'g' (stat 10) )
 
 
 -- return a grid of floor tiles
@@ -92,11 +107,14 @@ boardGen (sizeX, sizeY) =
         boundingBox = [ (x,y) | x <- [1..sizeX], y <- [1,sizeY] ] ++ [ (x,y) | x <- [1,sizeX], y <- [1..sizeY] ]
 
 
+initialPlayerCInfo :: CreatureInfo
+initialPlayerCInfo  = CreatureInfo  { _position = (4,4)
+                                    , _cDisplay = '@'
+                                    , _health   = (stat 50)
+                                    }
+
 initialPlayer :: Player
-initialPlayer = Player  { _pInfo =
-                          CreatureInfo  { _position = (4,4)
-                                        , _cDisplay = '@'
-                                        }
+initialPlayer = Player  { _pInfo = initialPlayerCInfo
                         }
 
 initialState :: GameState
