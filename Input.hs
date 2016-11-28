@@ -49,10 +49,10 @@ handleInput gs ev =
         V.EvKey (V.KChar k) [] | k `elem` ['0'..'9'] -> BMain.continue (fullGameTurn (handleMoveInput k) gs)
 
         -- Or arrow key movement
-        V.EvKey V.KUp       []  -> BMain.continue (fullGameTurn (playerMove ( 0,-1) ) gs)
-        V.EvKey V.KDown     []  -> BMain.continue (fullGameTurn (playerMove ( 0, 1) ) gs)
-        V.EvKey V.KLeft     []  -> BMain.continue (fullGameTurn (playerMove (-1, 0) ) gs)
-        V.EvKey V.KRight    []  -> BMain.continue (fullGameTurn (playerMove ( 1, 0) ) gs)
+        V.EvKey V.KUp       []  -> BMain.continue (fullGameTurn (action_move ( 0,-1) ) gs)
+        V.EvKey V.KDown     []  -> BMain.continue (fullGameTurn (action_move ( 0, 1) ) gs)
+        V.EvKey V.KLeft     []  -> BMain.continue (fullGameTurn (action_move (-1, 0) ) gs)
+        V.EvKey V.KRight    []  -> BMain.continue (fullGameTurn (action_move ( 1, 0) ) gs)
 
         -- for a key which does nothing, do nothing (redraw identical)
         -- could optionally print "That key does nothing!" or something?
@@ -64,17 +64,17 @@ handleMoveInput :: Char -> (Action)
 handleMoveInput k =
     -- TODO: 5 = wait or something?
     case k of
-        '1' -> playerMove (-1, 1)
-        '2' -> playerMove ( 0, 1)
-        '3' -> playerMove ( 1, 1)
+        '1' -> action_move (-1, 1)
+        '2' -> action_move ( 0, 1)
+        '3' -> action_move ( 1, 1)
 
-        '4' -> playerMove (-1, 0)
-        '5' -> playerMove ( 0, 0) -- 5 does nothing, wastes turn
-        '6' -> playerMove ( 1, 0)
+        '4' -> action_move (-1, 0)
+        '5' -> action_move ( 0, 0) -- 5 does nothing, wastes turn
+        '6' -> action_move ( 1, 0)
 
-        '7' -> playerMove (-1,-1)
-        '8' -> playerMove ( 0,-1)
-        '9' -> playerMove ( 1,-1)
+        '7' -> action_move (-1,-1)
+        '8' -> action_move ( 0,-1)
+        '9' -> action_move ( 1,-1)
         _   -> error "non-numeric input to handleMoveInput"
 
 
@@ -113,8 +113,8 @@ playerTurn  action gs =
 -- Maybe we moved, or maybe we print "you can't move there!", etc
 -- GameState should be the last argument of every Action, to make it easier to partially apply!
 --      Or just use the Action alias
-playerMove :: (Int, Int) -> (Action)
-playerMove move gs
+action_move :: (Int, Int) -> (Action)
+action_move move gs
 
     -- Check if that's actually a valid move, ie not into an enemy or wall
     -- TODO: Safer checks than fromJust!
