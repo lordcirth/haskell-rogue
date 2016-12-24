@@ -1,0 +1,67 @@
+-- TODO list:
+
+- Be able to attack (melee) and kill an enemy
+  - make an attack Action
+  - bind a key to it and test
+  - check for melee range
+  - make a damageMonster function
+    - Check for death on each hit
+
+- Theme/Design:
+  - Save sci-fi for future, AP-based game
+  - Go with fantasy for now
+
+  - Skills auto-unlocked by stat reqs
+    - simpler UI
+    - Stats:
+      - Strength:
+        - direct: melee dmg, HP
+        - skills: lots of passives
+          - regen, armor, etc
+        - usually a "safe" thing to level up
+
+      - Dexterity:
+        - direct: tohit, dodge?, stamina?
+        - skills;
+          - fancy combat skills
+          - utility: sprint, etc
+        - primarily for phsyical combat builds
+          - "value points" for utility
+
+      - Power:
+        - raw magic power
+        - direct: MP max
+        - skills: bigger booms
+          - AoEs
+          - nukes
+
+      - Control:
+        - magical skill
+        - direct: 
+          - magic tohit?/cast chance?
+          - + buff duration
+        - skills: fancy stuff
+          - utility:
+            - teleportation
+            - invis
+            - scrying
+        - of some use to warriors for utility/piercing immunities
+          
+- Skill ideas:
+  - Clairvoyant Strike:
+    - bit of DEX, medium CTL?
+    - small MP cost
+    - see a moment into the future to predict opponent
+    - undodgeable/unmissable strike
+    - high crit chance
+    - handy for melee warriors against high-evasion opponents
+
+  - Blink:
+    - short-range targeted teleport
+    - limit to Line of Sight?
+    - high CTL
+
+  - Foresight:
+    - Buff
+    - bonus chance to dodge
+    - low DEX, medium/high CTL

@@ -131,8 +131,10 @@ action_move move gs
         attempt         = addPos (gs^.player.pInfo.position) move   :: (Int, Int) -- doesn't it work with playerPos?!
         targetTile      = fromJust $ M.lookup (attempt) (gs^.gameBoard.tiles)
 
-        result_success  = ActionResult True  (resulting_gs) -- No message for moving, too spammy
-        result_fail     = ActionResult False (addMessage "That's a wall!" gs) -- Return unchanged gs + message
+        -- No message for moving, too spammy
+        result_success  = ActionResult True  (resulting_gs)
+        -- Return unchanged gs + message
+        result_fail     = ActionResult False (addMessage "That's a wall!" gs)
 
 -- Append a message to the gamestate's buffer
 -- TODO: Drop old messages once it gets too long

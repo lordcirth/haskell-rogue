@@ -23,10 +23,11 @@ data Board = Board  { _size_x   :: Int
                     }
 
 -- ie HP, MP
-data Stat = Stat  { _cap      :: Int
+data Stat = Stat    { _cap      :: Int
                     , _current  :: Int
                     }
 
+-- "smart constructor"
 stat :: Int -> Stat
 stat a = Stat {_cap = a, _current = a}
 
@@ -68,14 +69,14 @@ wallTile    = Tile False '#'
 
 -- TODO: Refactor Monsters into their own file once they grow
 -- Instances of Monster:
-cInfo_guard :: CreatureInfo
-cInfo_guard  = CreatureInfo  { _position = (33,33)
-                            , _cDisplay = 'g'
-                            , _health   = (stat 10)
-                            }
+cInfo_kobold :: CreatureInfo
+cInfo_kobold  = CreatureInfo    { _position = (33,33)
+                                , _cDisplay = 'g'
+                                , _health   = (stat 10)
+                                }
 
-monster_guard     :: (Int, Int) -> Monster
-monster_guard pos = Monster "Security Guard" (CreatureInfo pos 'g' (stat 10) )
+monster_kobold     :: (Int, Int) -> Monster
+monster_kobold pos = Monster "kobold" (CreatureInfo pos 'k' (stat 10) )
 
 
 -- return a grid of floor tiles
@@ -121,7 +122,7 @@ initialState :: GameState
 initialState = GameState    { _gameBoard    = ( boardGen (16, 16))
                             , _turnNum      = 0 -- Not yet used for anything
                             , _player       = initialPlayer
-                            , _monsters     = [monster_guard (8,8)]
+                            , _monsters     = [monster_kobold (8,8)]
                             , _messages     = []
                             }
 
