@@ -32,8 +32,16 @@ initialPlayerCInfo  = CreatureInfo  { _position = (4,4)
                                     , _health   = (resource 50)
                                     }
 
+initialPlayerStats :: Stats
+initialPlayerStats = Stats  { _strength     = 1
+                            , _dexterity    = 1
+                            , _power        = 1
+                            , _control      = 1
+                            }
+
 initialPlayer :: Player
 initialPlayer = Player  { _pInfo = initialPlayerCInfo
+                        , _stats = initialPlayerStats
                         }
 
 initialState :: GameState

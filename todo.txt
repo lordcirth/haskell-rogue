@@ -1,7 +1,6 @@
 -- TODO list:
 -- '-' is todo, '+' is done, '=' is notes
 
-
 + Be able to attack (melee) and kill an enemy
   + make an attack Action
   + bind a key to it and test
@@ -10,7 +9,24 @@
     + Check for death on each hit
   + make attempting to move into a monster instead attack
 
-- 
+- Stats system:
+  + Add stats to Player in GameState
+  + Make Stats a datatype deriving Ord
+    = so we can quickly test stat reqs with >
+
+- Skill system:
+  - create datatype 'Skill'
+  - active skills:
+    - list = filter unlocked skills?
+    - update every stat change
+  - passive skills:
+    - isUnlocked function, checked wherever it's relevant
+      = ie when attacking, when attacked, etc
+
+- Random generation:
+  - want a function: dice :: Rng -> Int -> Int -> (Int, Rng) or similar
+    = dice Rng numDice dieSize =
+  - Should probably learn about monads
 
 = Theme/Design:
   = Save sci-fi for future, AP-based game

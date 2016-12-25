@@ -14,6 +14,13 @@ data Resource = Resource    { _cap      :: Int
 resource :: Int -> Resource
 resource a = Resource {_cap = a, _current = a}
 
+-- Contains all the stats, for quick > compare
+data Stats = Stats  { _strength     :: Int
+                    , _dexterity    :: Int
+                    , _power        :: Int
+                    , _control      :: Int
+                    } deriving (Eq, Ord, Show)
+
 -- Creatures:
 data CreatureInfo = CreatureInfo    { _position     :: (Int, Int)
                                     , _cDisplay     :: Char
@@ -25,9 +32,11 @@ data Monster = Monster      { _name     :: String
                             } deriving Eq
 
 data Player = Player        { _pInfo    :: CreatureInfo
+                            , _stats    :: Stats
                             }
 
 makeLenses '' Resource
+makeLenses '' Stats
 makeLenses '' CreatureInfo
 makeLenses '' Monster
 makeLenses '' Player
