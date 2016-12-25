@@ -1,40 +1,19 @@
 {-# Language TemplateHaskell #-} -- For Lenses
 
--- export everything
+-- export everything defined here, and submodules
 module GameState
     ( module GameState
     , module GameState.Board
+    , module GameState.Creatures
     ) where
 
---reexport submodules
+-- submodules
 import GameState.Board
+import GameState.Creatures
 
 
 import qualified Data.Map as M
 import Control.Lens
-
--- ie HP, MP
-data Stat = Stat    { _cap      :: Int
-                    , _current  :: Int
-                    }
-
--- "smart constructor"
-stat :: Int -> Stat
-stat a = Stat {_cap = a, _current = a}
-
--- Creatures:
-data CreatureInfo = CreatureInfo    { _position     :: (Int, Int)
-                                    , _cDisplay     :: Char
-                                    , _health       :: Stat
-                                    }
-
-data Monster = Monster      { _name     :: String
-                            , _mInfo    :: CreatureInfo
-                            }
-
-
-data Player = Player        { _pInfo    :: CreatureInfo
-                            }
 
 -- The entire game state
 data GameState = GameState  { _gameBoard    :: Board
