@@ -167,5 +167,9 @@ damage_monster gs index dmg =
 -- Append a message to the gamestate's buffer
 -- TODO: Drop old messages once it gets too long
 addMessage :: String -> GameState -> GameState
-addMessage message gs =
-    over (messages) ( ++ [message]) (gs)
+addMessage message gs
+    -- TODO: Fix hardcoded buffer length
+    | length (gs^.messages) > 12    = over (messages) (drop 1) (added)
+    | otherwise                     = added
+    where
+        added   = over (messages) ( ++ [message]) (gs) :: GameState
