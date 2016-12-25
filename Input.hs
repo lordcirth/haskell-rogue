@@ -12,6 +12,7 @@ import qualified Brick.Main as BMain
 import qualified Brick.Types as T
 import qualified Data.Map as M
 import Data.Maybe   -- fromJust
+import Data.List    -- delete
 
 
 -- external libraries:
@@ -158,11 +159,18 @@ inMeleeRange one two =
 
 -- gs, MonsterIndex, damage
 damage_monster :: GameState -> Int -> Int -> GameState
-damage_monster gs index dmg =
+damage_monster gs index dmg
+
+    -- If monster is dead now, delete from list instead of changing it
+    | newMonster^.mInfo.health.current <= 0 = over (monsters ) (delete (oldMonster) ) (gs)
+
     -- .~ is from lens, replaces list element
-    over (monsters) (element index .~ newMonster) gs
+    | otherwise = over (monsters) (element index .~ newMonster) gs
+
     where
+        -- TODO: Look into len's 'ix'
         newMonster = over (mInfo.health.current) (`subtract` dmg) ( (gs^.monsters) !! index)
+        oldMonster = (gs^.monsters) !! index
 
 -- Append a message to the gamestate's buffer
 -- TODO: Drop old messages once it gets too long

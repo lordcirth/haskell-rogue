@@ -8,7 +8,7 @@ import Control.Lens
 -- ie HP, MP
 data Stat = Stat    { _cap      :: Int
                     , _current  :: Int
-                    }
+                    } deriving Eq
 
 -- "smart constructor"
 stat :: Int -> Stat
@@ -18,11 +18,11 @@ stat a = Stat {_cap = a, _current = a}
 data CreatureInfo = CreatureInfo    { _position     :: (Int, Int)
                                     , _cDisplay     :: Char
                                     , _health       :: Stat
-                                    }
+                                    } deriving Eq
 
 data Monster = Monster      { _name     :: String
                             , _mInfo    :: CreatureInfo
-                            }
+                            } deriving Eq
 
 data Player = Player        { _pInfo    :: CreatureInfo
                             }
