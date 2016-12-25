@@ -136,10 +136,14 @@ action_move move gs
 
 
 -- Player (attempts to) attack the specified monster (by list index)
-action_attack :: Int -> (Action)
-action_attack target gs
+action_melee :: Int -> (Action)
+action_melee index gs
 
-    | inMeleeRange (gs^.player.pInfo.position) (target.mInfo.position) = ActionResult (True, damage gs)
+    | inMeleeRange (gs^.player.pInfo.position) (target^.mInfo.position) = result
+    where
+        -- Technically unsafe access, but we'll trust the passed index
+        target = (gs^.monsters) !! index
+        result = ActionResult True ( addMessage "attacked!" (damage gs index 1))
 
 inMeleeRange :: (Int, Int) -> (Int, Int) -> Bool
 inMeleeRange one two =
