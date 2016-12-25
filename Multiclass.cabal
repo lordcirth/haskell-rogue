@@ -1,0 +1,12 @@
+Name:           Multiclass
+Version:        0.1.1
+Cabal-Version:  >= 1.2
+License:        BSD3
+Author:         Nathan Fish
+Synopsis:       Simple roguelike with an unusual skill system
+Build-Type:     Simple
+Stability:      Alpha
+
+Executable multiclass
+  Build-Depends:  base, brick, vty, lens, containers
+  Main-Is:        Main.hs
