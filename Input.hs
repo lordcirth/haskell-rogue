@@ -46,6 +46,9 @@ handleInput gs ev =
         -- use numpad keys and match on number range to get movement
         V.EvKey (V.KChar k) [] | k `elem` ['0'..'9'] -> BMain.continue (fullGameTurn (handleMoveInput k) gs)
 
+        -- Temporary testing: when player presses 'a' attempt to attack the first monster in list
+        V.EvKey (V.KChar 'a') [] -> BMain.continue (fullGameTurn (action_melee 0) gs)
+
         -- Or arrow key movement
         V.EvKey V.KUp       []  -> BMain.continue (fullGameTurn (action_move ( 0,-1) ) gs)
         V.EvKey V.KDown     []  -> BMain.continue (fullGameTurn (action_move ( 0, 1) ) gs)
@@ -139,11 +142,13 @@ action_move move gs
 action_melee :: Int -> (Action)
 action_melee index gs
 
-    | inMeleeRange (gs^.player.pInfo.position) (target^.mInfo.position) = result
+    | inMeleeRange (gs^.player.pInfo.position) (target^.mInfo.position) = result_success
+    | otherwise = result_fail
     where
         -- Technically unsafe access, but we'll trust the passed index
         target = (gs^.monsters) !! index
-        result = ActionResult True ( addMessage "attacked!" (damage_monster gs index 1))
+        result_success  = ActionResult True  ( addMessage "attacked!" (damage_monster gs index 1))
+        result_fail     = ActionResult False ( addMessage "Out of range!" gs)
 
 inMeleeRange :: (Int, Int) -> (Int, Int) -> Bool
 inMeleeRange one two =
