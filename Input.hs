@@ -154,7 +154,8 @@ inMeleeRange one two =
 -- gs, MonsterIndex, damage
 damage :: GameState -> Int -> Int -> GameState
 damage gs index dmg =
-    (over ())
+    -- placeholder
+    over (monsters) (id) gs
 
 -- Append a message to the gamestate's buffer
 -- TODO: Drop old messages once it gets too long
