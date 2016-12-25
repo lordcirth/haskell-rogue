@@ -148,7 +148,7 @@ action_melee index gs
     where
         -- Technically unsafe access, but we'll trust the passed index
         target = (gs^.monsters) !! index
-        result_success  = ActionResult True  ( addMessage "attacked!" (damage_monster gs index 1))
+        result_success  = ActionResult True  (damage_monster (addMessage "attacked!" gs) index 1)
         result_fail     = ActionResult False ( addMessage "Out of range!" gs)
 
 inMeleeRange :: (Int, Int) -> (Int, Int) -> Bool
@@ -162,15 +162,18 @@ damage_monster :: GameState -> Int -> Int -> GameState
 damage_monster gs index dmg
 
     -- If monster is dead now, delete from list instead of changing it
-    | newMonster^.mInfo.health.current <= 0 = over (monsters ) (delete (oldMonster) ) (gs)
+    | newMonster^.mInfo.health.current <= 0 = over (monsters) (delete (oldMonster) ) (addMessage kill_message  gs)
 
     -- .~ is from lens, replaces list element
     | otherwise = over (monsters) (element index .~ newMonster) gs
 
     where
         -- TODO: Look into len's 'ix'
-        newMonster = over (mInfo.health.current) (`subtract` dmg) ( (gs^.monsters) !! index)
+        newMonster = over (mInfo.health.current) (subtract dmg) ( (gs^.monsters) !! index)
         oldMonster = (gs^.monsters) !! index
+        -- Debugging message:    
+        --message = "Monster was at: " ++ (show $ oldMonster^.mInfo.health.current) ++ "and is now at: " ++ (show $ newMonster^.mInfo.health.current) :: String
+        kill_message = "You kill the " ++ (oldMonster^.name) ++ "!"
 
 -- Append a message to the gamestate's buffer
 -- TODO: Drop old messages once it gets too long
