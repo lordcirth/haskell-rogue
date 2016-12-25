@@ -1,11 +1,12 @@
 -- TODO list:
 
 - Be able to attack (melee) and kill an enemy
-  - make an attack Action
-  - bind a key to it and test
-  - check for melee range
-  - make a damageMonster function
-    - Check for death on each hit
+  + make an attack Action
+  + bind a key to it and test
+  + check for melee range
+  + make a damageMonster function
+    + Check for death on each hit
+  - make attempting to move into a monster instead attack
 
 - Theme/Design:
   - Save sci-fi for future, AP-based game

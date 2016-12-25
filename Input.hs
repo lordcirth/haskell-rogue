@@ -12,7 +12,7 @@ import qualified Brick.Main as BMain
 import qualified Brick.Types as T
 import qualified Data.Map as M
 import Data.Maybe   -- fromJust
-import Data.List    -- delete
+import Data.List    -- delete, find
 
 
 -- external libraries:
@@ -108,8 +108,12 @@ playerTurn  action gs =
     -- for the moment, we just do the action.
      let result = action gs in
       --  (result^.gameState)
-    result
+     result
 
+-- Return the Just Monster at the given location, or Nothing if there isn't one
+monsterAt :: GameState -> (Int, Int) -> Maybe Monster
+monsterAt gs pos =
+    find (\m -> (m^.mInfo.position) == pos) (gs^.monsters)
 
 -- Takes current gameState, and direction to move ie (0,1)
 -- Maybe we moved, or maybe we print "you can't move there!", etc
@@ -119,7 +123,8 @@ action_move :: (Int, Int) -> (Action)
 action_move move gs
 
     -- Check if that's actually a valid move, ie not into an enemy or wall
-    -- TODO: Safer checks than fromJust!
+    -- If there's a monster there, melee it!
+    | isJust $ monsterAt gs attempt  = action_melee (fromJust $ monsterAt gs attempt) gs
     | targetTile^.walkable  = result_success
     | otherwise             = result_fail
 
@@ -130,7 +135,9 @@ action_move move gs
     where
         playerPos       = player.pInfo.position      -- A lens, ie gs^.playerPos
         resulting_gs    = over (playerPos) (addPos move) gs :: GameState
-        attempt         = addPos (gs^.player.pInfo.position) move   :: (Int, Int) -- doesn't it work with playerPos?!
+        attempt         = addPos (gs^.player.pInfo.position) move   :: (Int, Int)
+        
+        -- TODO: Safer checks than fromJust?
         targetTile      = fromJust $ M.lookup (attempt) (gs^.gameBoard.tiles)
 
         -- No message for moving, too spammy
@@ -148,6 +155,7 @@ action_melee index gs
     where
         -- Technically unsafe access, but we'll trust the passed index
         target = (gs^.monsters) !! index
+        -- Note that we add the message first, then damage, so as to come before the death message, etc
         result_success  = ActionResult True  (damage_monster (addMessage "attacked!" gs) index 1)
         result_fail     = ActionResult False ( addMessage "Out of range!" gs)
 
