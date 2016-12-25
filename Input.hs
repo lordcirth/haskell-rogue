@@ -143,7 +143,7 @@ action_melee index gs
     where
         -- Technically unsafe access, but we'll trust the passed index
         target = (gs^.monsters) !! index
-        result = ActionResult True ( addMessage "attacked!" (damage gs index 1))
+        result = ActionResult True ( addMessage "attacked!" (damage_monster gs index 1))
 
 inMeleeRange :: (Int, Int) -> (Int, Int) -> Bool
 inMeleeRange one two =
@@ -152,10 +152,12 @@ inMeleeRange one two =
         diff = one `subtractPos` two
 
 -- gs, MonsterIndex, damage
-damage :: GameState -> Int -> Int -> GameState
-damage gs index dmg =
-    -- placeholder
-    over (monsters) (id) gs
+damage_monster :: GameState -> Int -> Int -> GameState
+damage_monster gs index dmg =
+    -- .~ is from lens, replaces list element
+    over (monsters) (element index .~ newMonster) gs
+    where
+        newMonster = over (mInfo.health.current) (`subtract` dmg) ( (gs^.monsters) !! index)
 
 -- Append a message to the gamestate's buffer
 -- TODO: Drop old messages once it gets too long

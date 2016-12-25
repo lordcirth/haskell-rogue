@@ -57,6 +57,7 @@ makeLenses '' Board
 makeLenses '' GameState
 makeLenses '' Monster
 makeLenses '' Player
+makeLenses '' Stat
 makeLenses '' CreatureInfo
 
 
