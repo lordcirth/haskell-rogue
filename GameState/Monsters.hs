@@ -14,5 +14,3 @@ cInfo_kobold  = CreatureInfo    { _position = (33,33)
 
 monster_kobold     :: (Int, Int) -> Monster
 monster_kobold pos = Monster "kobold" (CreatureInfo pos 'k' (stat 10) )
-
-

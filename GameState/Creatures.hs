@@ -27,6 +27,7 @@ data Monster = Monster      { _name     :: String
 data Player = Player        { _pInfo    :: CreatureInfo
                             }
 
+makeLenses '' Stat
+makeLenses '' CreatureInfo
 makeLenses '' Monster
 makeLenses '' Player
-makeLenses '' Stat

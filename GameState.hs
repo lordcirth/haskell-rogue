@@ -25,7 +25,6 @@ data GameState = GameState  { _gameBoard    :: Board
                             , _messages     :: [String] -- Message buffer
                             }
 makeLenses '' GameState
-makeLenses '' CreatureInfo
 
 initialPlayerCInfo :: CreatureInfo
 initialPlayerCInfo  = CreatureInfo  { _position = (4,4)
