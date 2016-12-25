@@ -37,7 +37,7 @@ makeLenses '' ActionResult
 type Action = (GameState -> ActionResult)
 
 
-handleInput :: GameState -> V.Event -> T.EventM () (T.Next (GameState))
+handleInput :: GameState -> V.Event -> T.EventM (T.Next (GameState))
 handleInput gs ev =
     case ev of
         -- the empty list [] is the list of mod keys
@@ -139,11 +139,11 @@ action_move move gs
 action_attack :: Int -> (Action)
 action_attack target gs
 
-    | inMeleeRange (gs^.player.pInfo.pos) (target.mInfo.pos) = ActionResult (True, damage gs)
+    | inMeleeRange (gs^.player.pInfo.position) (target.mInfo.position) = ActionResult (True, damage gs)
 
 inMeleeRange :: (Int, Int) -> (Int, Int) -> Bool
 inMeleeRange one two =
-    (fst diff =< 1) && (snd diff =< 1)
+    (fst diff <= 1) && (snd diff <= 1)
     where
         diff = one `subtractPos` two
 
