@@ -132,6 +132,9 @@ initialState = GameState    { _gameBoard    = ( boardGen (16, 16))
 addPos :: (Int, Int) -> (Int, Int) -> (Int, Int)
 addPos (x1,y1) (x2,y2) = (x1+x2, y1+y2)
 
+-- add two 2d positions
+subtractPos :: (Int, Int) -> (Int, Int) -> (Int, Int)
+subtractPos (x1,y1) (x2,y2) = (x1-x2, y1-y2)
 
 -- Apply a function to every tile and return the new GameState
 forAllTilesDo :: (Tile -> Tile) -> GameState -> GameState

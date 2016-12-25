@@ -21,14 +21,12 @@ import Control.Lens
 import GameState
 
 --  The structure that all Actions must return
-data ActionResult = ActionResult    { --_message      :: String -- A one-line string saying what happened
-                                    -- merged into gameState by the action itself
-
+data ActionResult = ActionResult    {
                                     -- Has the player spent his turn? eg an invalid action doesn't count
                                     -- Also enables 'free actions' before your turn, in future
                                       _costsTurn    :: Bool
 
-                                    -- Resulting gameState - message gets merged into gamestate by 'fullGameTurn'
+                                    -- Resulting gameState messages are merged into gamestate by the actions
                                     , _gameState    :: GameState
                                     }
 
@@ -135,6 +133,24 @@ action_move move gs
         result_success  = ActionResult True  (resulting_gs)
         -- Return unchanged gs + message
         result_fail     = ActionResult False (addMessage "That's a wall!" gs)
+
+
+-- Player (attempts to) attack the specified monster (by list index)
+action_attack :: Int -> (Action)
+action_attack target gs
+
+    | inMeleeRange (gs^.player.pInfo.pos) (target.mInfo.pos) = ActionResult (True, damage gs)
+
+inMeleeRange :: (Int, Int) -> (Int, Int) -> Bool
+inMeleeRange one two =
+    (fst diff =< 1) && (snd diff =< 1)
+    where
+        diff = one `subtractPos` two
+
+-- gs, MonsterIndex, damage
+damage :: GameState -> Int -> Int -> GameState
+damage gs index dmg =
+    (over ())
 
 -- Append a message to the gamestate's buffer
 -- TODO: Drop old messages once it gets too long
