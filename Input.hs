@@ -152,7 +152,7 @@ action_melee index gs
 
 inMeleeRange :: (Int, Int) -> (Int, Int) -> Bool
 inMeleeRange one two =
-    (fst diff <= 1) && (snd diff <= 1)
+    (abs (fst diff) <= 1) && (abs (snd diff) <= 1)
     where
         diff = one `subtractPos` two
 
