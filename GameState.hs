@@ -23,22 +23,7 @@ data GameState = GameState  { _gameBoard    :: Board
                             , _messages     :: [String] -- Message buffer
                             }
 makeLenses '' GameState
-makeLenses '' Monster
-makeLenses '' Player
-makeLenses '' Stat
 makeLenses '' CreatureInfo
-
--- TODO: Refactor Monsters into their own file once they grow
--- Instances of Monster:
-cInfo_kobold :: CreatureInfo
-cInfo_kobold  = CreatureInfo    { _position = (33,33)
-                                , _cDisplay = 'g'
-                                , _health   = (stat 10)
-                                }
-
-monster_kobold     :: (Int, Int) -> Monster
-monster_kobold pos = Monster "kobold" (CreatureInfo pos 'k' (stat 10) )
-
 
 initialPlayerCInfo :: CreatureInfo
 initialPlayerCInfo  = CreatureInfo  { _position = (4,4)
