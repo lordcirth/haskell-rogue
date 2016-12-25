@@ -48,7 +48,7 @@ handleInput gs ev =
         V.EvKey (V.KChar k) [] | k `elem` ['0'..'9'] -> BMain.continue (fullGameTurn (handleMoveInput k) gs)
 
         -- Temporary testing: when player presses 'a' attempt to attack the first monster in list
-        V.EvKey (V.KChar 'a') [] -> BMain.continue (fullGameTurn (action_melee 0) gs)
+        --V.EvKey (V.KChar 'a') [] -> BMain.continue (fullGameTurn (action_melee 0) gs)
 
         -- Or arrow key movement
         V.EvKey V.KUp       []  -> BMain.continue (fullGameTurn (action_move ( 0,-1) ) gs)
@@ -147,16 +147,14 @@ action_move move gs
 
 
 -- Player (attempts to) attack the specified monster (by list index)
-action_melee :: Int -> (Action)
-action_melee index gs
+action_melee :: Monster -> (Action)
+action_melee target gs
 
     | inMeleeRange (gs^.player.pInfo.position) (target^.mInfo.position) = result_success
     | otherwise = result_fail
     where
-        -- Technically unsafe access, but we'll trust the passed index
-        target = (gs^.monsters) !! index
         -- Note that we add the message first, then damage, so as to come before the death message, etc
-        result_success  = ActionResult True  (damage_monster (addMessage "attacked!" gs) index 1)
+        result_success  = ActionResult True  (damage_monster (addMessage "attacked!" gs) target 1)
         result_fail     = ActionResult False ( addMessage "Out of range!" gs)
 
 inMeleeRange :: (Int, Int) -> (Int, Int) -> Bool
@@ -165,23 +163,25 @@ inMeleeRange one two =
     where
         diff = one `subtractPos` two
 
+replaceMonster :: GameState -> Monster -> Monster -> GameState
+replaceMonster gs old new = over (monsters) (map (\i -> if i == old then new else i)) (gs)
+
 -- gs, MonsterIndex, damage
-damage_monster :: GameState -> Int -> Int -> GameState
-damage_monster gs index dmg
+damage_monster :: GameState -> Monster -> Int -> GameState
+damage_monster gs target dmg
 
     -- If monster is dead now, delete from list instead of changing it
-    | newMonster^.mInfo.health.current <= 0 = over (monsters) (delete (oldMonster) ) (addMessage kill_message  gs)
+    | newMonster^.mInfo.health.current <= 0 = over (monsters) (delete (target) ) (addMessage kill_message  gs)
 
-    -- .~ is from lens, replaces list element
-    | otherwise = over (monsters) (element index .~ newMonster) gs
+    -- replace monster with updated monster
+    | otherwise = replaceMonster gs target newMonster
 
     where
         -- TODO: Look into len's 'ix'
-        newMonster = over (mInfo.health.current) (subtract dmg) ( (gs^.monsters) !! index)
-        oldMonster = (gs^.monsters) !! index
+        newMonster = over (mInfo.health.current) (subtract dmg) (target)
         -- Debugging message:    
         --message = "Monster was at: " ++ (show $ oldMonster^.mInfo.health.current) ++ "and is now at: " ++ (show $ newMonster^.mInfo.health.current) :: String
-        kill_message = "You kill the " ++ (oldMonster^.name) ++ "!"
+        kill_message = "You kill the " ++ (target^.name) ++ "!"
 
 -- Append a message to the gamestate's buffer
 -- TODO: Drop old messages once it gets too long
