@@ -2,6 +2,8 @@
 
 -- Players, Monsters, Stats, etc
 module GameState.Creatures where
+
+import Control.Lens
  
 -- ie HP, MP
 data Stat = Stat    { _cap      :: Int

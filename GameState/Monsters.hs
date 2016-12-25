@@ -1,5 +1,9 @@
 {-# Language TemplateHaskell #-} -- For Lenses
 
+module GameState.Monsters where
+
+-- Stats, etc
+import GameState.Creatures
 
 -- Specific Monsters:
 cInfo_kobold :: CreatureInfo

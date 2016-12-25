@@ -5,11 +5,13 @@ module GameState
     ( module GameState
     , module GameState.Board
     , module GameState.Creatures
+    , module GameState.Monsters
     ) where
 
 -- submodules
 import GameState.Board
 import GameState.Creatures
+import GameState.Monsters
 
 
 import qualified Data.Map as M
