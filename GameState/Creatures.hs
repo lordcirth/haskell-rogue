@@ -6,18 +6,18 @@ module GameState.Creatures where
 import Control.Lens
  
 -- ie HP, MP
-data Stat = Stat    { _cap      :: Int
-                    , _current  :: Int
-                    } deriving Eq
+data Resource = Resource    { _cap      :: Int
+                            , _current  :: Int
+                            } deriving Eq
 
 -- "smart constructor"
-stat :: Int -> Stat
-stat a = Stat {_cap = a, _current = a}
+resource :: Int -> Resource
+resource a = Resource {_cap = a, _current = a}
 
 -- Creatures:
 data CreatureInfo = CreatureInfo    { _position     :: (Int, Int)
                                     , _cDisplay     :: Char
-                                    , _health       :: Stat
+                                    , _health       :: Resource
                                     } deriving Eq
 
 data Monster = Monster      { _name     :: String
@@ -27,7 +27,7 @@ data Monster = Monster      { _name     :: String
 data Player = Player        { _pInfo    :: CreatureInfo
                             }
 
-makeLenses '' Stat
+makeLenses '' Resource
 makeLenses '' CreatureInfo
 makeLenses '' Monster
 makeLenses '' Player

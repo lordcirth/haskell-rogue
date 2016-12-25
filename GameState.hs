@@ -29,7 +29,7 @@ makeLenses '' GameState
 initialPlayerCInfo :: CreatureInfo
 initialPlayerCInfo  = CreatureInfo  { _position = (4,4)
                                     , _cDisplay = '@'
-                                    , _health   = (stat 50)
+                                    , _health   = (resource 50)
                                     }
 
 initialPlayer :: Player
