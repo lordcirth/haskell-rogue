@@ -177,8 +177,7 @@ damage_monster gs target dmg
     | otherwise = replaceMonster gs target newMonster
 
     where
-        -- TODO: Look into len's 'ix'
-        newMonster = over (mInfo.health.current) (subtract dmg) (target)
+        newMonster = over (mInfo) (damage Physical 1) (target)
         -- Debugging message:    
         --message = "Monster was at: " ++ (show $ oldMonster^.mInfo.health.current) ++ "and is now at: " ++ (show $ newMonster^.mInfo.health.current) :: String
         kill_message = "You kill the " ++ (target^.name) ++ "!"
