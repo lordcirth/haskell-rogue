@@ -154,7 +154,7 @@ action_melee target gs
     | otherwise = result_fail
     where
         -- Note that we add the message first, then damage, so as to come before the death message, etc
-        result_success  = ActionResult True  (damage_monster (addMessage "attacked!" gs) target 1)
+        result_success  = ActionResult True  (damage_monster (addMessage "attacked!" gs) target Physical 1)
         result_fail     = ActionResult False ( addMessage "Out of range!" gs)
 
 inMeleeRange :: (Int, Int) -> (Int, Int) -> Bool
@@ -167,8 +167,8 @@ replaceMonster :: GameState -> Monster -> Monster -> GameState
 replaceMonster gs old new = over (monsters) (map (\i -> if i == old then new else i)) (gs)
 
 -- gs, MonsterIndex, damage
-damage_monster :: GameState -> Monster -> Int -> GameState
-damage_monster gs target dmg
+damage_monster :: GameState -> Monster -> DamageType -> Int -> GameState
+damage_monster gs target dmgType dmg
 
     -- If monster is dead now, delete from list instead of changing it
     | newMonster^.mInfo.health.current <= 0 = over (monsters) (delete (target) ) (addMessage kill_message  gs)
