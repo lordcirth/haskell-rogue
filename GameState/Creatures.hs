@@ -21,6 +21,9 @@ data Stats = Stats  { _strength     :: Int
                     , _control      :: Int
                     } deriving (Eq, Ord, Show)
 
+-- Typeless is for special / irresistable dmg
+data DamageType = Physical | Magical | Typeless
+
 -- Creatures:
 data CreatureInfo = CreatureInfo    { _position     :: (Int, Int)
                                     , _cDisplay     :: Char

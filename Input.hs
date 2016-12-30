@@ -183,6 +183,16 @@ damage_monster gs target dmg
         --message = "Monster was at: " ++ (show $ oldMonster^.mInfo.health.current) ++ "and is now at: " ++ (show $ newMonster^.mInfo.health.current) :: String
         kill_message = "You kill the " ++ (target^.name) ++ "!"
 
+-- Universal damage function: will calculate armor, etc
+-- Because it operates on CreatureInfo's, it works for both players and monsters.
+-- Try to keep the complexity in here
+damage  :: DamageType -> Int -> CreatureInfo -> CreatureInfo
+damage dmgType dmg oldCreature = 
+    -- TODO: Armor, etc
+    newCreature
+    where
+        newCreature = over (health.current) (subtract dmg) (oldCreature)
+
 -- Append a message to the gamestate's buffer
 -- TODO: Drop old messages once it gets too long
 addMessage :: String -> GameState -> GameState
