@@ -16,7 +16,7 @@
 
 - Enemy AI:
   - if in range, attack, else move toward player
-  - is there a way to generalize damage? Maybe make it over CreatureInfo?
+  + is there a way to generalize damage? Maybe make it over CreatureInfo?
 
 
 - Skill system:
@@ -48,7 +48,7 @@
 
       = Dexterity:
         = direct: tohit, dodge?, stamina?
-        = skills;
+        = skills: -- the main point?
           = fancy combat skills
           = utility: sprint, etc
         = primarily for phsyical combat builds
@@ -72,6 +72,19 @@
             = invis
             = scrying
         = of some use to warriors for utility/piercing immunities
+
+        = Combos:
+          = STR + DEX: warrior:     crits, charge, bash, cleave, block, dodge, etc
+          = STR + CTL: spellsword:  warrior with utility magic instead of some combat skills
+            = not exactly paladin, spellsword?
+            = some magical damage to bypass armor, etc
+          = STR + PWR: warrior with flaming sword, shockwave stomps, HP regen?
+
+          = DEX + CTL: ninja/monk:  crits, backstab, blink teleport, invis, etc
+          = DEX + PWR: ???
+
+          = PWR + CTL: Mage: ranged dps, utility
+
           
 = Skill ideas:
   = Clairvoyant Strike:
