@@ -14,7 +14,7 @@ import GameState.Creatures
 import GameState.Monsters
 
 
-import qualified Data.Map as M
+-- import qualified Data.Map as M
 import Control.Lens
 
 -- The entire game state
