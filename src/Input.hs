@@ -177,7 +177,7 @@ damage_monster gs target dmg
     | otherwise = replaceMonster gs target newMonster
 
     where
-        newMonster = over (mInfo) (damage Physical 1) (target)
+        newMonster = over (mInfo) (damage Physical dmg) (target)
         -- Debugging message:
         --message = "Monster was at: " ++ (show $ oldMonster^.mInfo.health.current) ++ "and is now at: " ++ (show $ newMonster^.mInfo.health.current) :: String
         kill_message = "You kill the " ++ (target^.name) ++ "!"
@@ -187,7 +187,7 @@ damage_monster gs target dmg
 -- Try to keep the complexity in here
 damage  :: DamageType -> Int -> CreatureInfo -> CreatureInfo
 damage dmgType dmg oldCreature =
-    -- TODO: Armor, etc
+    -- TODO: Armor, etc using dmgType
     newCreature
     where
         newCreature = over (health.current) (subtract dmg) (oldCreature)

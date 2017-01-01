@@ -14,16 +14,10 @@ import qualified Input as IN
 --Brick imports
 import qualified Graphics.Vty as V
 import qualified Brick.Widgets.Dialog as D
--- import qualified Brick.Widgets.Center as C
 import qualified Brick.Main as BMain
-
-import Brick.Types
-  ( Widget
-  )
-
 import qualified Brick.AttrMap as A
 import Brick.Util (on, bg)
---import qualified Brick.Types as T
+
 
 --Theming boilerplate
 theMap :: A.AttrMap
