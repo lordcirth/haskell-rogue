@@ -16,6 +16,7 @@ import GameState.Monsters
 
 -- import qualified Data.Map as M
 import Control.Lens
+import System.Random
 
 -- The entire game state
 data GameState = GameState  { _gameBoard    :: Board
@@ -23,6 +24,7 @@ data GameState = GameState  { _gameBoard    :: Board
                             , _player       :: Player
                             , _monsters     :: [Monster]
                             , _messages     :: [String] -- Message buffer
+                            , _rng          :: StdGen
                             }
 makeLenses '' GameState
 
@@ -44,13 +46,15 @@ initialPlayer = Player  { _pInfo = initialPlayerCInfo
                         , _stats = initialPlayerStats
                         }
 
-initialState :: GameState
-initialState = GameState    { _gameBoard    = ( boardGen (16, 16))
-                            , _turnNum      = 0 -- Not yet used for anything
-                            , _player       = initialPlayer
-                            , _monsters     = [monster_kobold (8,8)]
-                            , _messages     = []
-                            }
+-- The initialState is constant, except for initializing the RNG
+initialState :: StdGen -> GameState
+initialState rng = GameState    { _gameBoard    = ( boardGen (16, 16))
+                                , _turnNum      = 0 -- Not yet used for anything
+                                , _player       = initialPlayer
+                                , _monsters     = [monster_kobold (8,8)]
+                                , _messages     = []
+                                , _rng          = rng
+                                }
 
 
 -- Apply a function to every tile and return the new GameState

@@ -19,6 +19,9 @@ import qualified Brick.AttrMap as A
 import Brick.Util (on, bg)
 
 
+--RNG
+import System.Random
+
 --Theming boilerplate
 theMap :: A.AttrMap
 theMap = A.attrMap V.defAttr
@@ -45,5 +48,6 @@ theApp =
 
 main :: IO ()
 main = do
-    dialog <- BMain.defaultMain theApp GS.initialState
+    rng <- getStdGen
+    dialog <- BMain.defaultMain theApp (GS.initialState rng)
     putStrLn $ "End"
