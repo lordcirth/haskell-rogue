@@ -8,5 +8,6 @@ Build-Type:     Simple
 Stability:      Alpha
 
 Executable multiclass
+  hs-source-dirs: src
   Build-Depends:  base, brick, vty, lens, containers
   Main-Is:        Main.hs

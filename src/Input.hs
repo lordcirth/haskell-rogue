@@ -99,8 +99,8 @@ incrementTurn gs =
     over (turnNum) (+1) gs
 
 -- Arguments:
--- current gameState,
--- an action (function) which a player character attempts to do, ie move, or attack
+-- an action (function) which a player character attempts to do, ie move, or attack,
+-- and current gameState
 -- Note that this means the player can only do one thing/keypress per turn, an acceptable limitation
 --      Actually, since I have 'costsTurn' now, I have support for 'free actions' before a full action!
 playerTurn :: (Action) -> GameState -> ActionResult
@@ -136,7 +136,7 @@ action_move move gs
         playerPos       = player.pInfo.position      -- A lens, ie gs^.playerPos
         resulting_gs    = over (playerPos) (addPos move) gs :: GameState
         attempt         = addPos (gs^.player.pInfo.position) move   :: (Int, Int)
-        
+
         -- TODO: Safer checks than fromJust?
         targetTile      = fromJust $ M.lookup (attempt) (gs^.gameBoard.tiles)
 
@@ -146,7 +146,7 @@ action_move move gs
         result_fail     = ActionResult False (addMessage "That's a wall!" gs)
 
 
--- Player (attempts to) attack the specified monster (by list index)
+-- Player (attempts to) attack the specified monster
 action_melee :: Monster -> (Action)
 action_melee target gs
 
@@ -178,7 +178,7 @@ damage_monster gs target dmg
 
     where
         newMonster = over (mInfo) (damage Physical 1) (target)
-        -- Debugging message:    
+        -- Debugging message:
         --message = "Monster was at: " ++ (show $ oldMonster^.mInfo.health.current) ++ "and is now at: " ++ (show $ newMonster^.mInfo.health.current) :: String
         kill_message = "You kill the " ++ (target^.name) ++ "!"
 
@@ -186,7 +186,7 @@ damage_monster gs target dmg
 -- Because it operates on CreatureInfo's, it works for both players and monsters.
 -- Try to keep the complexity in here
 damage  :: DamageType -> Int -> CreatureInfo -> CreatureInfo
-damage dmgType dmg oldCreature = 
+damage dmgType dmg oldCreature =
     -- TODO: Armor, etc
     newCreature
     where
