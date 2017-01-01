@@ -9,5 +9,5 @@ Stability:      Alpha
 
 Executable multiclass
   hs-source-dirs: src
-  Build-Depends:  base, brick, vty, lens, containers
+  Build-Depends:  base, brick, vty, lens, containers, random
   Main-Is:        Main.hs
