@@ -33,6 +33,13 @@
     = dice Rng numDice dieSize =
   - Should probably learn about monads
 
+
+- Creature refactor:
+  - Make the structure GS^.creatures
+  - Creature = CreatureInfo + Maybe Player, Maybe Monster
+  - therefore, can damage a Creature polymorphically - simplicity!
+  - But can still match player or monster-specific things
+
 = Theme/Design:
   = Save sci-fi for future, AP-based game
   = Go with fantasy for now
@@ -78,6 +85,7 @@
           = STR + CTL: spellsword:  warrior with utility magic instead of some combat skills
             = not exactly paladin, spellsword?
             = some magical damage to bypass armor, etc
+            = purge poison?
           = STR + PWR: warrior with flaming sword, shockwave stomps, HP regen?
 
           = DEX + CTL: ninja/monk:  crits, backstab, blink teleport, invis, etc

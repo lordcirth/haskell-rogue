@@ -7,16 +7,18 @@ module Input
 where
 
 
-import qualified Graphics.Vty as V
-import qualified Brick.Main as BMain
-import qualified Brick.Types as T
+-- std libs:
 import qualified Data.Map as M
 import Data.Maybe   -- fromJust
 import Data.List    -- delete, find
+import System.Random
 
 
 -- external libraries:
 import Control.Lens
+import qualified Graphics.Vty as V
+import qualified Brick.Main as BMain
+import qualified Brick.Types as T
 
 -- My own files:
 import GameState
@@ -156,12 +158,26 @@ action_melee target gs
         -- Note that we add the message first, then damage, so as to come before the death message, etc
         result_success  = ActionResult True  (damage_monster (addMessage "attacked!" gs) target Physical 1)
         result_fail     = ActionResult False ( addMessage "Out of range!" gs)
+        dmg             = fst (rng_result)
+        rng_result      = randomR (1,6) (gs^.rng) :: (Int, StdGen)
+        new_gs          = over (rng) (set (snd rng_result)) gs
+
+-- Rng, number of dice, sides of dice.
+-- ie, dieRoll rng 2 6 = 2d6
+dieRoll :: StdGen -> Int -> Int -> (Int, StdGen)
+dieRoll rng 0 _ = 0
+-- TODO
+-- dieRoll rng n size =
+
+
+
 
 inMeleeRange :: (Int, Int) -> (Int, Int) -> Bool
 inMeleeRange one two =
     (abs (fst diff) <= 1) && (abs (snd diff) <= 1)
     where
         diff = one `subtractPos` two
+        --prng  = gs^.rng
 
 replaceMonster :: GameState -> Monster -> Monster -> GameState
 replaceMonster gs old new = over (monsters) (map (\i -> if i == old then new else i)) (gs)
