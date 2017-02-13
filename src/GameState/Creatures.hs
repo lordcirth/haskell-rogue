@@ -4,7 +4,7 @@
 module GameState.Creatures where
 
 import Control.Lens
- 
+
 -- ie HP, MP
 data Resource = Resource    { _cap      :: Int
                             , _current  :: Int
@@ -25,18 +25,27 @@ data Stats = Stats  { _strength     :: Int
 data DamageType = Physical | Magical | Typeless
 
 -- Creatures:
+                                    -- General things
+data Creature = Creature            { _cInfo        :: CreatureInfo
+
+                                    -- If Player,   player-specific things
+                                    , _m_player     :: Maybe Player
+
+                                    -- If Monster,  monster-specific things
+                                    , _m_monster    :: Maybe Monster
+
+                                    } deriving Eq
+
 data CreatureInfo = CreatureInfo    { _position     :: (Int, Int)
                                     , _cDisplay     :: Char
                                     , _health       :: Resource
                                     } deriving Eq
 
-data Monster = Monster      { _name     :: String
-                            , _mInfo    :: CreatureInfo
-                            } deriving Eq
+data Monster = Monster              { _name         :: String
+                                    } deriving Eq
 
-data Player = Player        { _pInfo    :: CreatureInfo
-                            , _stats    :: Stats
-                            }
+data Player = Player                { _stats        :: Stats
+                                    } deriving Eq
 
 makeLenses '' Resource
 makeLenses '' Stats
