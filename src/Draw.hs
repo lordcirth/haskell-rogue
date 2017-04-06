@@ -45,27 +45,25 @@ charMap :: GameState -> M.Map (Int, Int) Char
 charMap gs =
     addPlayer gs (addMonsters gs ground)
     where
-        ground = fmap (renderTile) (gs^.gameBoard.tiles)
+        ground = fmap renderTile (gs^.gameBoard.tiles)
 
 
 addPlayer :: GameState -> M.Map (Int, Int) Char -> M.Map (Int, Int) Char
 addPlayer gs chars =
-    M.insert (playerLocation) (playerChar) chars
+    M.insert playerLocation playerChar chars
     where
-        playerChar      = gs^.player.pInfo.cDisplay -- what character to show
-        playerLocation  = gs^.player.pInfo.position -- where to render it
+        playerChar      = fromJust (gs ^? player.cInfo.cDisplay) -- what character to show
+        playerLocation  = fromJust (gs ^? player.cInfo.position) -- where to render it
+
 
 addMonsters :: GameState -> M.Map (Int, Int) Char -> M.Map (Int, Int) Char
 addMonsters gs chars =
-    foldl (addMonster) (chars) (gs^.monsters)
---    M.insert (playerLocation) (playerChar) chars
-    where
-  --      monsterChar     = monster.mInfo.cDisplay -- what character to show
-    --    monsterLocation = monster.mInfo.position -- where to render it
+    foldl addMonster chars (gs^.creatures)
 
-addMonster ::  M.Map (Int, Int) Char -> Monster -> M.Map (Int, Int) Char
+
+addMonster ::  M.Map (Int, Int) Char -> Creature -> M.Map (Int, Int) Char
 addMonster chars monster    =
-    M.insert (monster^.mInfo.position) (monster^.mInfo.cDisplay) chars
+    M.insert (monster^.cInfo.position) (monster^.cInfo.cDisplay) chars
 
 
 -- This is probably bad code, but it does work...
@@ -83,7 +81,7 @@ stringGrid sizeX sizeY mapGrid =
 chop :: Int -> String -> [String]
 chop _      []       = []
 chop sizeX  string   =
-    (fst sParts):(chop sizeX $ snd sParts)
+    fst sParts : chop sizeX (snd sParts)
     where
         sParts = splitAt sizeX string
 
@@ -103,7 +101,7 @@ printMessages gs =
 printTurnNumber :: GameState -> Widget
 printTurnNumber gs =
     let offset = Location (gs^.gameBoard.size_y + 4, 0)
-        turnString = "Turn: " ++ (show $ gs^.turnNum)
+        turnString = "Turn: " ++ show (gs^.turnNum)
     in
 
-    translateBy offset (str $ turnString)
+    translateBy offset (str turnString)

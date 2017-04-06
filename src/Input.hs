@@ -187,7 +187,7 @@ damage_monster :: GameState -> Monster -> DamageType -> Int -> GameState
 damage_monster gs target dmgType dmg
 
     -- If monster is dead now, delete from list instead of changing it
-    | newMonster^.mInfo.health.current <= 0 = over (monsters) (delete (target) ) (addMessage kill_message  gs)
+    | newMonster^.cInfo.health.current <= 0 = over (creatures) (delete (target) ) (addMessage kill_message  gs)
 
     -- replace monster with updated monster
     | otherwise = replaceMonster gs target newMonster
