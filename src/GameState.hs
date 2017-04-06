@@ -62,14 +62,7 @@ initialState initialRng = GameState    { _gameBoard    = boardGen (16, 16)
 forAllTilesDo :: (Tile -> Tile) -> (GameState -> GameState)
 forAllTilesDo func = over (gameBoard.tiles) (fmap func)
 
--- A lens to access 'player' quickly
-
---playerlens = lens getter setter
---
---    where
---        getter gs   = gs^.creatures.unsafeSingular(ix 0)
---        setter p gs = set (creatures.unsafeSingular(ix 0)) gs p
 
 -- A handy lens
-player :: Traversal' GameState Creature
-player = creatures . ix 0
+player :: Lens' GameState Creature
+player = creatures . singular (ix 0)

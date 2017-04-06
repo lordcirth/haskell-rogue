@@ -113,9 +113,9 @@ playerTurn  action gs =
      result
 
 -- Return the Just Monster at the given location, or Nothing if there isn't one
-monsterAt :: GameState -> (Int, Int) -> Maybe Monster
+monsterAt :: GameState -> (Int, Int) -> Maybe Creature
 monsterAt gs pos =
-    find (\m -> (m^.mInfo.position) == pos) (gs^.monsters)
+    find (\m -> (m^.cInfo.position) == pos) (gs^.creatures)
 
 -- Takes current gameState, and direction to move ie (0,1)
 -- Maybe we moved, or maybe we print "you can't move there!", etc
@@ -135,9 +135,9 @@ action_move move gs
     --ActionResult  True (addMessage "player moved" resulting_gs)
     -- Return new gameState with message added
     where
-        playerPos       = player.pInfo.position      -- A lens, ie gs^.playerPos
+        playerPos       = player.cInfo.position      -- A lens, ie gs^.playerPos
         resulting_gs    = over (playerPos) (addPos move) gs :: GameState
-        attempt         = addPos (gs^.player.pInfo.position) move   :: (Int, Int)
+        attempt         = addPos (gs^.player.cInfo.position) move   :: (Int, Int)
 
         -- TODO: Safer checks than fromJust?
         targetTile      = fromJust $ M.lookup (attempt) (gs^.gameBoard.tiles)
@@ -149,10 +149,10 @@ action_move move gs
 
 
 -- Player (attempts to) attack the specified monster
-action_melee :: Monster -> (Action)
+action_melee :: Creature -> (Action)
 action_melee target gs
 
-    | inMeleeRange (gs^.player.pInfo.position) (target^.mInfo.position) = result_success
+    | inMeleeRange (gs^.player.cInfo.position) (target^.cInfo.position) = result_success
     | otherwise = result_fail
     where
         -- Note that we add the message first, then damage, so as to come before the death message, etc
@@ -179,11 +179,11 @@ inMeleeRange one two =
         diff = one `subtractPos` two
         --prng  = gs^.rng
 
-replaceMonster :: GameState -> Monster -> Monster -> GameState
-replaceMonster gs old new = over (monsters) (map (\i -> if i == old then new else i)) (gs)
+replaceMonster :: GameState -> Creature -> Creature -> GameState
+replaceMonster gs old new = over (creatures) (map (\i -> if i == old then new else i)) (gs)
 
 -- gs, MonsterIndex, damage
-damage_monster :: GameState -> Monster -> DamageType -> Int -> GameState
+damage_monster :: GameState -> Creature -> DamageType -> Int -> GameState
 damage_monster gs target dmgType dmg
 
     -- If monster is dead now, delete from list instead of changing it
@@ -193,10 +193,10 @@ damage_monster gs target dmgType dmg
     | otherwise = replaceMonster gs target newMonster
 
     where
-        newMonster = over (mInfo) (damage Physical dmg) (target)
+        newMonster = over (cInfo) (damage Physical dmg) (target)
         -- Debugging message:
         --message = "Monster was at: " ++ (show $ oldMonster^.mInfo.health.current) ++ "and is now at: " ++ (show $ newMonster^.mInfo.health.current) :: String
-        kill_message = "You kill the " ++ (target^.name) ++ "!"
+        kill_message = "You kill the " ++ name (fromJust target^.mMonsterInfo) ++ "!"
 
 -- Universal damage function: will calculate armor, etc
 -- Because it operates on CreatureInfo's, it works for both players and monsters.
