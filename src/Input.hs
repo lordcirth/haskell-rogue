@@ -165,7 +165,7 @@ action_melee target gs
 -- Rng, number of dice, sides of dice.
 -- ie, dieRoll rng 2 6 = 2d6
 dieRoll :: StdGen -> Int -> Int -> (Int, StdGen)
-dieRoll rng 0 _ = 0
+dieRoll _ 0 _ = 0
 -- TODO
 -- dieRoll rng n size =
 

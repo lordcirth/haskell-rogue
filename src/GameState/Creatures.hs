@@ -3,6 +3,7 @@
 -- Players, Monsters, Stats, etc
 module GameState.Creatures where
 
+import Data.Maybe
 import Control.Lens
 
 -- ie HP, MP
@@ -22,17 +23,17 @@ data Stats = Stats  { _strength     :: Int
                     } deriving (Eq, Ord, Show)
 
 -- Typeless is for special / irresistable dmg
-data DamageType = Physical | Magical | Typeless
+data DamageType = Physical | Magical | Typeless deriving Eq
 
 -- Creatures:
                                     -- General things
 data Creature = Creature            { _cInfo        :: CreatureInfo
 
                                     -- If Player,   player-specific things
-                                    , _m_player     :: Maybe Player
+                                    , _mPlayerInfo      :: Maybe PlayerInfo
 
                                     -- If Monster,  monster-specific things
-                                    , _m_monster    :: Maybe Monster
+                                    , _mMonsterInfo :: Maybe MonsterInfo
 
                                     } deriving Eq
 
@@ -41,14 +42,24 @@ data CreatureInfo = CreatureInfo    { _position     :: (Int, Int)
                                     , _health       :: Resource
                                     } deriving Eq
 
-data Monster = Monster              { _name         :: String
+                                    -- What monster-specific data we have
+data MonsterInfo = MonsterInfo      { _name         :: String
                                     } deriving Eq
 
-data Player = Player                { _stats        :: Stats
+                                    -- What player-specific data we have
+data PlayerInfo = PlayerInfo        { _stats        :: Stats
                                     } deriving Eq
 
 makeLenses '' Resource
 makeLenses '' Stats
+makeLenses '' Creature
 makeLenses '' CreatureInfo
-makeLenses '' Monster
-makeLenses '' Player
+makeLenses '' MonsterInfo
+makeLenses '' PlayerInfo
+
+isPlayer :: Creature -> Bool
+isPlayer c = isJust $ c^.mPlayerInfo
+
+isMonster :: Creature -> Bool
+isMonster c = isJust $ c^.mMonsterInfo
+

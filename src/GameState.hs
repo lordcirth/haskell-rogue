@@ -21,8 +21,7 @@ import System.Random
 -- The entire game state
 data GameState = GameState  { _gameBoard    :: Board
                             , _turnNum      :: Int
-                            , _player       :: Player
-                            , _monsters     :: [Monster]
+                            , _creatures    :: [Creature]
                             , _messages     :: [String] -- Message buffer
                             , _rng          :: StdGen
                             }
@@ -31,7 +30,7 @@ makeLenses '' GameState
 initialPlayerCInfo :: CreatureInfo
 initialPlayerCInfo  = CreatureInfo  { _position = (4,4)
                                     , _cDisplay = '@'
-                                    , _health   = (resource 50)
+                                    , _health   = resource 50
                                     }
 
 initialPlayerStats :: Stats
@@ -41,22 +40,36 @@ initialPlayerStats = Stats  { _strength     = 1
                             , _control      = 1
                             }
 
-initialPlayer :: Player
-initialPlayer = Player  { _pInfo = initialPlayerCInfo
-                        , _stats = initialPlayerStats
-                        }
+
+
+initialPlayer :: Creature
+initialPlayer =  Creature   { _cInfo            = initialPlayerCInfo
+                            , _mPlayerInfo      = Just PlayerInfo {_stats = initialPlayerStats}
+                            , _mMonsterInfo     = Nothing
+                            }
 
 -- The initialState is constant, except for initializing the RNG
 initialState :: StdGen -> GameState
-initialState rng = GameState    { _gameBoard    = ( boardGen (16, 16))
+initialState initialRng = GameState    { _gameBoard    = boardGen (16, 16)
                                 , _turnNum      = 0 -- Not yet used for anything
-                                , _player       = initialPlayer
-                                , _monsters     = [monster_kobold (8,8)]
+                                , _creatures    = [initialPlayer, monsterKobold (8,8)]
                                 , _messages     = []
-                                , _rng          = rng
+                                , _rng          = initialRng
                                 }
 
 
 -- Apply a function to every tile and return the new GameState
-forAllTilesDo :: (Tile -> Tile) -> GameState -> GameState
-forAllTilesDo func gs = over (gameBoard.tiles) (fmap func) gs
+forAllTilesDo :: (Tile -> Tile) -> (GameState -> GameState)
+forAllTilesDo func = over (gameBoard.tiles) (fmap func)
+
+-- A lens to access 'player' quickly
+
+--playerlens = lens getter setter
+--
+--    where
+--        getter gs   = gs^.creatures.unsafeSingular(ix 0)
+--        setter p gs = set (creatures.unsafeSingular(ix 0)) gs p
+
+-- A handy lens
+player :: Traversal' GameState Creature
+player = creatures . ix 0
