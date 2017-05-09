@@ -40,7 +40,7 @@ makeLenses '' ActionResult
 type Action = (GameState -> ActionResult)
 
 
-handleInput :: GameState -> V.Event -> T.EventM (T.Next (GameState))
+handleInput :: GameState -> V.Event -> T.EventM (T.Next GameState)
 handleInput gs ev =
     case ev of
         -- the empty list [] is the list of mod keys
@@ -64,7 +64,7 @@ handleInput gs ev =
 
 
 -- The player has requested to move in some direction.  Return an Action function which attempts the specific move
-handleMoveInput :: Char -> (Action)
+handleMoveInput :: Char -> Action
 handleMoveInput k =
     -- TODO: 5 = wait or something?
     case k of
@@ -84,7 +84,7 @@ handleMoveInput k =
 
 -- run a full game turn, ie pre-turn, player turn, enemy turn, post-turn.
 -- Currently, only the player exists.
-fullGameTurn :: (Action) -> GameState -> GameState
+fullGameTurn :: Action -> GameState -> GameState
 fullGameTurn action gs
 
         -- Player hasn't spent turn - free action or invalid
@@ -98,14 +98,14 @@ fullGameTurn action gs
 
 incrementTurn :: GameState -> GameState
 incrementTurn gs =
-    over (turnNum) (+1) gs
+    over turnNum (+1) gs
 
 -- Arguments:
 -- an action (function) which a player character attempts to do, ie move, or attack,
 -- and current gameState
 -- Note that this means the player can only do one thing/keypress per turn, an acceptable limitation
 --      Actually, since I have 'costsTurn' now, I have support for 'free actions' before a full action!
-playerTurn :: (Action) -> GameState -> ActionResult
+playerTurn :: Action -> GameState -> ActionResult
 playerTurn  action gs =
     -- for the moment, we just do the action.
      let result = action gs in
@@ -121,7 +121,7 @@ monsterAt gs pos =
 -- Maybe we moved, or maybe we print "you can't move there!", etc
 -- GameState should be the last argument of every Action, to make it easier to partially apply!
 --      Or just use the Action alias
-action_move :: (Int, Int) -> (Action)
+action_move :: (Int, Int) -> Action
 action_move move gs
 
     -- Check if that's actually a valid move, ie not into an enemy or wall
@@ -136,7 +136,7 @@ action_move move gs
     -- Return new gameState with message added
     where
         playerPos       = player.cInfo.position      -- A lens, ie gs^.playerPos
-        resulting_gs    = over (playerPos) (addPos move) gs :: GameState
+        resulting_gs    = over playerPos (addPos move) gs :: GameState
         attempt         = addPos (gs^.player.cInfo.position) move   :: (Int, Int)
 
         -- TODO: Safer checks than fromJust?
@@ -149,7 +149,7 @@ action_move move gs
 
 
 -- Player (attempts to) attack the specified monster
-action_melee :: Creature -> (Action)
+action_melee :: Creature -> Action
 action_melee target gs
 
     | inMeleeRange (gs^.player.cInfo.position) (target^.cInfo.position) = result_success
@@ -158,9 +158,10 @@ action_melee target gs
         -- Note that we add the message first, then damage, so as to come before the death message, etc
         result_success  = ActionResult True  (damage_monster (addMessage "attacked!" gs) target Physical 1)
         result_fail     = ActionResult False ( addMessage "Out of range!" gs)
-        dmg             = fst (rng_result)
-        rng_result      = randomR (1,6) (gs^.rng) :: (Int, StdGen)
-        new_gs          = over (rng) (set (snd rng_result)) gs
+        dmg = 1
+--        dmg             = fst (rng_result)
+--        rng_result      = randomR (1,6) (gs^.rng) :: (Int, StdGen)
+--        new_gs          = over (rng) (set (snd rng_result)) gs
 
 -- Rng, number of dice, sides of dice.
 -- ie, dieRoll rng 2 6 = 2d6
