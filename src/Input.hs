@@ -165,8 +165,8 @@ action_melee target gs
 
 -- Rng, number of dice, sides of dice.
 -- ie, dieRoll rng 2 6 = 2d6
-dieRoll :: StdGen -> Int -> Int -> (Int, StdGen)
-dieRoll _ 0 _ = 0
+--dieRoll :: StdGen -> Int -> Int -> (Int, StdGen)
+--dieRoll _ 0 _ = 0
 -- TODO
 -- dieRoll rng n size =
 
@@ -197,7 +197,7 @@ damage_monster gs target dmgType dmg
         newMonster = over (cInfo) (damage Physical dmg) (target)
         -- Debugging message:
         --message = "Monster was at: " ++ (show $ oldMonster^.mInfo.health.current) ++ "and is now at: " ++ (show $ newMonster^.mInfo.health.current) :: String
-        kill_message = "You kill the " ++ name (fromJust target^.mMonsterInfo) ++ "!"
+        kill_message = "You kill the " ++ (fromJust $ target^.mMonsterInfo)^.name ++ "!"
 
 -- Universal damage function: will calculate armor, etc
 -- Because it operates on CreatureInfo's, it works for both players and monsters.
