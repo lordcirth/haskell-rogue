@@ -112,7 +112,7 @@ playerTurn  action gs =
       --  (result^.gameState)
      result
 
--- Return the Just Monster at the given location, or Nothing if there isn't one
+-- Return the Just Creature at the given location, or Nothing if there isn't one
 monsterAt :: GameState -> (Int, Int) -> Maybe Creature
 monsterAt gs pos =
     find (\m -> (m^.cInfo.position) == pos) (gs^.creatures)
