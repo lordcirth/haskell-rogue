@@ -23,12 +23,12 @@ import GameState
 
 
 -- return the list of UI elements (Widgets)
-drawUI :: GameState -> [Widget]
+drawUI :: GameState -> [Widget(String)]
 drawUI gs =
     [printTurnNumber gs, printMessages gs, drawBoard gs]
 
 
-drawBoard :: GameState -> Widget
+drawBoard :: GameState -> Widget(String)
 drawBoard gs =
     let offset = Location (3,2) in
     translateBy offset (str $ boardAsString gs)
@@ -93,12 +93,12 @@ renderTile tile = tile^.tDisplay
 
 
 -- print the message buffer
-printMessages :: GameState -> Widget
+printMessages :: GameState -> Widget(String)
 printMessages gs =
     let offset = Location (0,gs^.gameBoard.size_x + 4) in
     translateBy offset (str $ unlines (gs^.messages))
 
-printTurnNumber :: GameState -> Widget
+printTurnNumber :: GameState -> Widget(String)
 printTurnNumber gs =
     let offset = Location (gs^.gameBoard.size_y + 4, 0)
         turnString = "Turn: " ++ show (gs^.turnNum)

@@ -32,7 +32,7 @@ theMap = A.attrMap V.defAttr
 
 
 -- Define how Brick should act
-theApp :: BMain.App GS.GameState V.Event
+theApp :: BMain.App GS.GameState V.Event ()
 theApp =
     BMain.App {
         -- UI.drawUI :: gameState -> [Widget]
@@ -43,7 +43,6 @@ theApp =
       , BMain.appHandleEvent = IN.handleInput
       , BMain.appStartEvent = return
       , BMain.appAttrMap = const theMap
-      , BMain.appLiftVtyEvent = id
       }
 
 main :: IO ()

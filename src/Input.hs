@@ -40,7 +40,7 @@ makeLenses '' ActionResult
 type Action = (GameState -> ActionResult)
 
 
-handleInput :: GameState -> V.Event -> T.EventM (T.Next GameState)
+handleInput :: GameState -> V.Event -> T.EventM () (T.Next GameState)
 handleInput gs ev =
     case ev of
         -- the empty list [] is the list of mod keys
