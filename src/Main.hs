@@ -1,9 +1,6 @@
 module Main where
 -- Init UI, run mainloop
 
--- Allows string literals to be converted to other types like Text
-{-# LANGUAGE OverloadedStrings #-}
-
 -- import other files from this project:
 -- Define GameState structure & initialState
 import qualified GameState as GS
@@ -53,4 +50,4 @@ main :: IO ()
 main = do
     rng <- getStdGen
     dialog <- BMain.defaultMain theApp (GS.initialState rng)
-    putStrLn $ "End"
+    putStrLn "End"

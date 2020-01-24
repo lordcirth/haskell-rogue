@@ -36,7 +36,7 @@ drawBoard gs =
 
 boardAsString :: GameState -> String
 boardAsString gs =
-    stringGrid (board^.size_x) (board^.size_y) $ charMap gs
+    stringGrid (board^.sizeX) (board^.sizeY) $ charMap gs
     where
         board = gs^.gameBoard -- A lens
 
@@ -70,20 +70,20 @@ addMonster chars monster    =
 -- The order we print it in here basically determines what the coord system is
 -- (1,1) is the top-left corner
 stringGrid :: Int -> Int -> M.Map (Int, Int) Char -> String
-stringGrid sizeX sizeY mapGrid =
-    unlines $ chop sizeX string
+stringGrid gridSizeX gridSizeY mapGrid =
+    unlines $ chop gridSizeX string
     where
         -- generate all (x,y)'s, look them up, and put them in a string
         -- put Y first so that X iterates first, making X horizontal and Y vertical
-        string = [ fromJust $ M.lookup (x,y) mapGrid | y <- [1..sizeY], x <- [1..sizeX] ] :: String
+        string = [ fromJust $ M.lookup (x,y) mapGrid | y <- [1..gridSizeY], x <- [1..gridSizeX] ] :: String
 
 -- used in stringGrid
 chop :: Int -> String -> [String]
 chop _      []       = []
-chop sizeX  string   =
-    fst sParts : chop sizeX (snd sParts)
+chop gridSizeX  string   =
+    fst sParts : chop gridSizeX (snd sParts)
     where
-        sParts = splitAt sizeX string
+        sParts = splitAt gridSizeX string
 
 
 -- Later we'll need to overlay multiple terrain effects, maybe?
@@ -95,12 +95,12 @@ renderTile tile = tile^.tDisplay
 -- print the message buffer
 printMessages :: GameState -> Widget()
 printMessages gs =
-    let offset = Location (0,gs^.gameBoard.size_x + 4) in
+    let offset = Location (0,gs^.gameBoard.sizeX + 4) in
     translateBy offset (str $ unlines (gs^.messages))
 
 printTurnNumber :: GameState -> Widget()
 printTurnNumber gs =
-    let offset = Location (gs^.gameBoard.size_y + 4, 0)
+    let offset = Location (gs^.gameBoard.sizeY + 4, 0)
         turnString = "Turn: " ++ show (gs^.turnNum)
     in
 

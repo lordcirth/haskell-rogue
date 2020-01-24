@@ -62,4 +62,3 @@ isPlayer c = isJust $ c^.mPlayerInfo
 
 isMonster :: Creature -> Bool
 isMonster c = isJust $ c^.mMonsterInfo
-

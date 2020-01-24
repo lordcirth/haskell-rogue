@@ -1,5 +1,3 @@
-{-# Language TemplateHaskell #-} -- For Lenses
-
 module GameState.Monsters where
 
 -- Stats, etc
