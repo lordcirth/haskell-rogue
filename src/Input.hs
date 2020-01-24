@@ -103,17 +103,22 @@ fullGameTurn action gs
 incrementTurn :: GameState -> GameState
 incrementTurn = over turnNum (+1)
 
--- Arguments:
--- an action (function) which a player character attempts to do, ie move, or attack,
--- and current gameState
--- Note that this means the player can only do one thing/keypress per turn, an acceptable limitation
---      Actually, since I have 'costsTurn' now, I have support for 'free actions' before a full action!
+-- The player can do a free action (returns _costsTurn = False) or full action
 playerTurn :: Action -> GameState -> ActionResult
 playerTurn  action gs =
     -- for the moment, we just do the action.
      let result = action gs in
       --  (result^.gameState)
      result
+
+getPlayer :: GameState -> Creature
+getPlayer gs = filter (isJust mPlayerInfo) gs^.creatures
+
+-- Monsters have no external input, only the game world
+monsterTurn :: Creature -> GameState -> GameState
+monsterTurn self gs = undefined
+  where
+    playerPos = (getPlayer gs) ^?! mPlayerInfo
 
 -- Return the Just Creature at the given location, or Nothing if there isn't one
 creatureAt :: GameState -> (Int, Int) -> Maybe Creature
