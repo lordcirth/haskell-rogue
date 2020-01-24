@@ -39,9 +39,9 @@ makeLenses '' ActionResult
 -- Any action the player can attempt - just an alias
 type Action = (GameState -> ActionResult)
 
-
-handleInput :: GameState -> V.Event -> T.EventM () (T.Next GameState)
-handleInput gs ev =
+-- https://github.com/jtdaugherty/brick/blob/master/docs/guide.rst#apphandleevent-handling-events
+handleInput :: GameState -> T.BrickEvent () e -> T.EventM () (T.Next GameState)
+handleInput gs (T.VtyEvent ev) =
     case ev of
         -- the empty list [] is the list of mod keys
         V.EvKey V.KEsc []   -> BMain.halt gs    -- press ESC to quit
