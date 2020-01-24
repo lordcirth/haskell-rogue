@@ -14,8 +14,8 @@ data Tile = Tile    { _walkable :: Bool
                     }
 
 -- the game emptyBoard / grid
-data Board = Board  { _size_x   :: Int
-                    , _size_y   :: Int
+data Board = Board  { _sizeX   :: Int
+                    , _sizeY   :: Int
                     , _tiles    :: M.Map (Int, Int) Tile
                     }
 
@@ -41,20 +41,19 @@ emptyBoard (sizeX, sizeY) = Board sizeX sizeY $
 
 -- Set the Tile type at the specified location
 setTile :: Tile -> (Int, Int) -> M.Map (Int, Int) Tile -> M.Map (Int, Int) Tile
-setTile wantTile (x,y) startBoard =
-    M.insert (x,y) wantTile (startBoard)
+setTile wantTile (x,y) = M.insert (x,y) wantTile
 
 -- Set the tile type for a list of positions
 setTilesAt  :: Tile -> [(Int,Int)] -> M.Map (Int, Int) Tile -> M.Map (Int, Int) Tile
-setTilesAt tileType positions startTiles = foldl (flip $ setTile tileType) (startTiles) positions
+setTilesAt tileType positions startTiles = foldl (flip $ setTile tileType) startTiles positions
 
 
 boardGen :: (Int, Int) -> Board
 boardGen (sizeX, sizeY) =
-    over (tiles) (setTilesAt wallTile boundingBox) (startBoard)
+    over tiles (setTilesAt wallTile boundingBox) startBoard
     --emptyBoard (sizeX, sizeY)
     where
-        startBoard  = ( emptyBoard (sizeX, sizeY) )                             :: Board
+        startBoard  = emptyBoard (sizeX, sizeY) :: Board
 
         -- a list of positions that is the edges of the board
         boundingBox = [ (x,y) | x <- [1..sizeX], y <- [1,sizeY] ] ++ [ (x,y) | x <- [1,sizeX], y <- [1..sizeY] ]
@@ -69,4 +68,3 @@ addPos (x1,y1) (x2,y2) = (x1+x2, y1+y2)
 -- add two 2d positions
 subtractPos :: (Int, Int) -> (Int, Int) -> (Int, Int)
 subtractPos (x1,y1) (x2,y2) = (x1-x2, y1-y2)
-

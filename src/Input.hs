@@ -25,13 +25,13 @@ import GameState
 
 --  The structure that all Actions must return
 data ActionResult = ActionResult    {
-                                    -- Has the player spent his turn? eg an invalid action doesn't count
-                                    -- Also enables 'free actions' before your turn, in future
-                                      _costsTurn    :: Bool
+  -- Has the player spent his turn? eg an invalid action doesn't count
+  -- Also enables 'free actions' before your turn, in future
+  _costsTurn    :: Bool
 
-                                    -- Resulting gameState messages are merged into gamestate by the actions
-                                    , _gameState    :: GameState
-                                    }
+  -- Resulting gameState messages are merged into gamestate by the actions
+  , _gameState    :: GameState
+}
 
 makeLenses '' ActionResult
 
