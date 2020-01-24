@@ -65,6 +65,8 @@ handleInput gs (T.VtyEvent ev) =
 -- Wasn't even a T.VtyEvent
 handleInput gs _ = BMain.continue gs
 
+action_nothing :: Action
+action_nothing gs = ActionResult { _costsTurn = False, _gameState = gs }
 
 -- The player has requested to move in some direction.  Return an Action function which attempts the specific move
 handleMoveInput :: Char -> Action
@@ -76,7 +78,8 @@ handleMoveInput k =
         '3' -> action_move ( 1, 1)
 
         '4' -> action_move (-1, 0)
-        '5' -> action_move ( 0, 0) -- 5 does nothing, wastes turn
+        -- 5 does nothing, wastes turn
+        '5' -> action_nothing
         '6' -> action_move ( 1, 0)
 
         '7' -> action_move (-1,-1)
