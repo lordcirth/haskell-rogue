@@ -50,13 +50,13 @@ handleInput gs (T.VtyEvent ev) =
         V.EvKey (V.KChar k) [] | k `elem` ['0'..'9'] -> BMain.continue (fullGameTurn (handleMoveInput k) gs)
 
         -- Temporary testing: when player presses 'a' attempt to attack the first monster in list
-        --V.EvKey (V.KChar 'a') [] -> BMain.continue (fullGameTurn (action_melee 0) gs)
+        --V.EvKey (V.KChar 'a') [] -> BMain.continue (fullGameTurn (actionMelee 0) gs)
 
         -- Or arrow key movement
-        V.EvKey V.KUp       []  -> BMain.continue (fullGameTurn (action_move ( 0,-1) ) gs)
-        V.EvKey V.KDown     []  -> BMain.continue (fullGameTurn (action_move ( 0, 1) ) gs)
-        V.EvKey V.KLeft     []  -> BMain.continue (fullGameTurn (action_move (-1, 0) ) gs)
-        V.EvKey V.KRight    []  -> BMain.continue (fullGameTurn (action_move ( 1, 0) ) gs)
+        V.EvKey V.KUp       []  -> BMain.continue (fullGameTurn (actionMove ( 0,-1) ) gs)
+        V.EvKey V.KDown     []  -> BMain.continue (fullGameTurn (actionMove ( 0, 1) ) gs)
+        V.EvKey V.KLeft     []  -> BMain.continue (fullGameTurn (actionMove (-1, 0) ) gs)
+        V.EvKey V.KRight    []  -> BMain.continue (fullGameTurn (actionMove ( 1, 0) ) gs)
 
         -- for a key which does nothing, do nothing (redraw identical)
         -- could optionally print "That key does nothing!" or something?
@@ -65,26 +65,24 @@ handleInput gs (T.VtyEvent ev) =
 -- Wasn't even a T.VtyEvent
 handleInput gs _ = BMain.continue gs
 
-action_nothing :: Action
-action_nothing gs = ActionResult { _costsTurn = False, _gameState = gs }
+actionNothing :: Action
+actionNothing gs = ActionResult { _costsTurn = False, _gameState = gs }
 
 -- The player has requested to move in some direction.  Return an Action function which attempts the specific move
 handleMoveInput :: Char -> Action
 handleMoveInput k =
-    -- TODO: 5 = wait or something?
     case k of
-        '1' -> action_move (-1, 1)
-        '2' -> action_move ( 0, 1)
-        '3' -> action_move ( 1, 1)
+        '1' -> actionMove (-1, 1)
+        '2' -> actionMove ( 0, 1)
+        '3' -> actionMove ( 1, 1)
 
-        '4' -> action_move (-1, 0)
-        -- 5 does nothing, wastes turn
-        '5' -> action_nothing
-        '6' -> action_move ( 1, 0)
+        '4' -> actionMove (-1, 0)
+        '5' -> actionNothing
+        '6' -> actionMove ( 1, 0)
 
-        '7' -> action_move (-1,-1)
-        '8' -> action_move ( 0,-1)
-        '9' -> action_move ( 1,-1)
+        '7' -> actionMove (-1,-1)
+        '8' -> actionMove ( 0,-1)
+        '9' -> actionMove ( 1,-1)
         _   -> error "non-numeric input to handleMoveInput"
 
 
@@ -103,8 +101,7 @@ fullGameTurn action gs
         where result = playerTurn action gs
 
 incrementTurn :: GameState -> GameState
-incrementTurn gs =
-    over turnNum (+1) gs
+incrementTurn = over turnNum (+1)
 
 -- Arguments:
 -- an action (function) which a player character attempts to do, ie move, or attack,
@@ -127,12 +124,12 @@ creatureAt gs pos =
 -- Maybe we moved, or maybe we print "you can't move there!", etc
 -- GameState should be the last argument of every Action, to make it easier to partially apply!
 --      Or just use the Action alias
-action_move :: (Int, Int) -> Action
-action_move move gs
+actionMove :: (Int, Int) -> Action
+actionMove move gs
 
     -- Check if that's actually a valid move, ie not into an enemy or wall
     -- If there's a monster there, melee it!
-    | isJust $ creatureAt gs attempt  = action_melee (fromJust $ creatureAt gs attempt) gs
+    | isJust $ creatureAt gs attempt  = actionMelee (fromJust $ creatureAt gs attempt) gs
     | targetTile^.walkable  = result_success
     | otherwise             = result_fail
 
@@ -146,23 +143,23 @@ action_move move gs
         attempt         = addPos (gs^.player.cInfo.position) move   :: (Int, Int)
 
         -- TODO: Safer checks than fromJust?
-        targetTile      = fromJust $ M.lookup (attempt) (gs^.gameBoard.tiles)
+        targetTile      = fromJust $ M.lookup attempt (gs^.gameBoard.tiles)
 
         -- No message for moving, too spammy
-        result_success  = ActionResult True  (resulting_gs)
+        result_success  = ActionResult True  resulting_gs
         -- Return unchanged gs + message
         result_fail     = ActionResult False (addMessage "That's a wall!" gs)
 
 
 -- Player (attempts to) attack the specified monster
-action_melee :: Creature -> Action
-action_melee target gs
+actionMelee :: Creature -> Action
+actionMelee target gs
 
     | inMeleeRange (gs^.player.cInfo.position) (target^.cInfo.position) = result_success
     | otherwise = result_fail
     where
         -- Note that we add the message first, then damage, so as to come before the death message, etc
-        result_success  = ActionResult True  (damage_monster (addMessage "attacked!" gs) target Physical dmg)
+        result_success  = ActionResult True  (damageMonster (addMessage "attacked!" gs) target Physical dmg)
         result_fail     = ActionResult False ( addMessage "Out of range!" gs)
         dmg = 1
 --        dmg             = fst (rng_result)
@@ -187,23 +184,23 @@ inMeleeRange one two =
         --prng  = gs^.rng
 
 replaceMonster :: GameState -> Creature -> Creature -> GameState
-replaceMonster gs old new = over (creatures) (map (\i -> if i == old then new else i)) (gs)
+replaceMonster gs old new = over creatures (map (\i -> if i == old then new else i)) gs
 
 -- gs, MonsterIndex, damage
-damage_monster :: GameState -> Creature -> DamageType -> Int -> GameState
-damage_monster gs target dmgType dmg
+damageMonster :: GameState -> Creature -> DamageType -> Int -> GameState
+damageMonster gs target dmgType dmg
 
     -- If monster is dead now, delete from list instead of changing it
-    | newMonster^.cInfo.health.current <= 0 = over (creatures) (delete (target) ) (addMessage kill_message  gs)
+    | newMonster^.cInfo.health.current <= 0 = over creatures (delete target) (addMessage kill_message  gs)
 
     -- replace monster with updated monster
     | otherwise = replaceMonster gs target newMonster
 
     where
-        newMonster = over (cInfo) (damage dmgType dmg) (target)
+        newMonster = over cInfo (damage dmgType dmg) target
         -- Debugging message:
         --message = "Monster was at: " ++ (show $ oldMonster^.mInfo.health.current) ++ "and is now at: " ++ (show $ newMonster^.mInfo.health.current) :: String
-        kill_message = "You kill the " ++ (fromJust $ target^.mMonsterInfo)^.name ++ "!"
+        kill_message = "You kill the " ++ fromJust (target^.mMonsterInfo)^.name ++ "!"
 
 -- Universal damage function: will calculate armor, etc
 -- Because it operates on CreatureInfo's, it works for both players and monsters.
@@ -213,14 +210,14 @@ damage dmgType dmg oldCreature =
     -- TODO: Armor, etc using dmgType
     newCreature
     where
-        newCreature = over (health.current) (subtract dmg) (oldCreature)
+        newCreature = over (health.current) (subtract dmg) oldCreature
 
 -- Append a message to the gamestate's buffer
 -- TODO: Drop old messages once it gets too long
 addMessage :: String -> GameState -> GameState
 addMessage message gs
     -- TODO: Fix hardcoded buffer length
-    | length (gs^.messages) > 12    = over (messages) (drop 1) (added)
+    | length (gs^.messages) > 12    = over messages (drop 1) added
     | otherwise                     = added
     where
-        added   = over (messages) ( ++ [message]) (gs) :: GameState
+        added   = over messages ( ++ [message]) gs :: GameState
