@@ -35,9 +35,9 @@ wallTile    = Tile False '#'
 -- Note that the order we generate it here is irrelevant, if it's a square.
 -- But, as defined in Draw.hs, X is horizontal and Y vertical, with (1,1) being top-left
 emptyBoard :: (Int, Int) -> Board
-emptyBoard (sizeX, sizeY) = Board sizeX sizeY $
+emptyBoard (maxSizeX, maxSizeY) = Board maxSizeX maxSizeY $
     M.fromList (zip pairs (repeat floorTile) )
-    where pairs = [ (x,y) | x <- [1..sizeX], y <- [1..sizeY] ]
+    where pairs = [ (x,y) | x <- [1..maxSizeX], y <- [1..maxSizeY] ]
 
 -- Set the Tile type at the specified location
 setTile :: Tile -> (Int, Int) -> M.Map (Int, Int) Tile -> M.Map (Int, Int) Tile
@@ -49,14 +49,14 @@ setTilesAt tileType positions startTiles = foldl (flip $ setTile tileType) start
 
 
 boardGen :: (Int, Int) -> Board
-boardGen (sizeX, sizeY) =
+boardGen (maxSizeX, maxSizeY) =
     over tiles (setTilesAt wallTile boundingBox) startBoard
     --emptyBoard (sizeX, sizeY)
     where
-        startBoard  = emptyBoard (sizeX, sizeY) :: Board
+        startBoard  = emptyBoard (maxSizeX, maxSizeY) :: Board
 
         -- a list of positions that is the edges of the board
-        boundingBox = [ (x,y) | x <- [1..sizeX], y <- [1,sizeY] ] ++ [ (x,y) | x <- [1,sizeX], y <- [1..sizeY] ]
+        boundingBox = [ (x,y) | x <- [1..maxSizeX], y <- [1,maxSizeY] ] ++ [ (x,y) | x <- [1,maxSizeX], y <- [1..maxSizeY] ]
 
 
 -- helper functions
