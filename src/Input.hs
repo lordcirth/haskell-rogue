@@ -11,7 +11,7 @@ where
 import qualified Data.Map as M
 import Data.Maybe   -- fromJust
 import Data.List    -- delete, find
-import System.Random
+-- import System.Random
 
 
 -- external libraries:
@@ -61,6 +61,9 @@ handleInput gs (T.VtyEvent ev) =
         -- for a key which does nothing, do nothing (redraw identical)
         -- could optionally print "That key does nothing!" or something?
         _                   -> BMain.continue gs
+
+-- Wasn't even a T.VtyEvent
+handleInput gs _ = BMain.continue gs
 
 
 -- The player has requested to move in some direction.  Return an Action function which attempts the specific move
@@ -156,7 +159,7 @@ action_melee target gs
     | otherwise = result_fail
     where
         -- Note that we add the message first, then damage, so as to come before the death message, etc
-        result_success  = ActionResult True  (damage_monster (addMessage "attacked!" gs) target Physical 1)
+        result_success  = ActionResult True  (damage_monster (addMessage "attacked!" gs) target Physical dmg)
         result_fail     = ActionResult False ( addMessage "Out of range!" gs)
         dmg = 1
 --        dmg             = fst (rng_result)
@@ -194,7 +197,7 @@ damage_monster gs target dmgType dmg
     | otherwise = replaceMonster gs target newMonster
 
     where
-        newMonster = over (cInfo) (damage Physical dmg) (target)
+        newMonster = over (cInfo) (damage dmgType dmg) (target)
         -- Debugging message:
         --message = "Monster was at: " ++ (show $ oldMonster^.mInfo.health.current) ++ "and is now at: " ++ (show $ newMonster^.mInfo.health.current) :: String
         kill_message = "You kill the " ++ (fromJust $ target^.mMonsterInfo)^.name ++ "!"
