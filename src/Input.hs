@@ -119,8 +119,8 @@ playerTurn  action gs =
      result
 
 -- Return the Just Creature at the given location, or Nothing if there isn't one
-monsterAt :: GameState -> (Int, Int) -> Maybe Creature
-monsterAt gs pos =
+creatureAt :: GameState -> (Int, Int) -> Maybe Creature
+creatureAt gs pos =
     find (\m -> (m^.cInfo.position) == pos) (gs^.creatures)
 
 -- Takes current gameState, and direction to move ie (0,1)
@@ -132,7 +132,7 @@ action_move move gs
 
     -- Check if that's actually a valid move, ie not into an enemy or wall
     -- If there's a monster there, melee it!
-    | isJust $ monsterAt gs attempt  = action_melee (fromJust $ monsterAt gs attempt) gs
+    | isJust $ creatureAt gs attempt  = action_melee (fromJust $ creatureAt gs attempt) gs
     | targetTile^.walkable  = result_success
     | otherwise             = result_fail
 
