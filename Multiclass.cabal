@@ -11,3 +11,4 @@ Executable multiclass
   hs-source-dirs: src
   Build-Depends:  base, brick, vty, lens, containers, random
   Main-Is:        Main.hs
+  other-modules:  Draw, GameState, GameState.Board, GameState.Creatures, GameState.Monsters, Input
