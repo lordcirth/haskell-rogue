@@ -112,7 +112,10 @@ playerTurn  action gs =
      result
 
 getPlayer :: GameState -> Creature
-getPlayer gs = filter (isJust mPlayerInfo) gs^.creatures
+getPlayer gs = head $ filter ft (gs^.creatures)
+  where
+    ft :: Creature -> Bool
+    ft c = isJust $ c ^. mPlayerInfo
 
 -- Monsters have no external input, only the game world
 monsterTurn :: Creature -> GameState -> GameState
