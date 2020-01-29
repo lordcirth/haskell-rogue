@@ -22,6 +22,7 @@ import qualified Brick.Types as T
 
 -- My own files:
 import GameState
+import Vector
 
 --  The structure that all Actions must return
 data ActionResult = ActionResult    {
@@ -119,9 +120,13 @@ getPlayer gs = head $ filter ft (gs^.creatures)
 
 -- Monsters have no external input, only the game world
 monsterTurn :: Creature -> GameState -> GameState
-monsterTurn self gs = undefined
+monsterTurn self gs =
+  -- Move towards the player
+
   where
     playerPos = getPlayer gs ^?! mPlayerInfo
+    selfPos = self ^. creatureInfo
+    direction = vecUnit $ vecSub playerPos selfPos
 
 -- Return the Just Creature at the given location, or Nothing if there isn't one
 creatureAt :: GameState -> (Int, Int) -> Maybe Creature
