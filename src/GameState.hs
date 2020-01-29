@@ -61,8 +61,3 @@ initialState initialRng = GameState    { _gameBoard    = boardGen (16, 16)
 -- Apply a function to every tile and return the new GameState
 forAllTilesDo :: (Tile -> Tile) -> (GameState -> GameState)
 forAllTilesDo func = over (gameBoard.tiles) (fmap func)
-
-
--- A handy lens
-player :: Lens' GameState Creature
-player = creatures . singular (ix 0)
