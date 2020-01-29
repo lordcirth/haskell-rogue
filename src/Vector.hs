@@ -5,6 +5,8 @@ type Vec2D = (Int, Int)
 vecAdd :: Vec2D -> Vec2D -> Vec2D
 vecAdd (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
 
+vecSub a (x, y) = vecAdd a (-x, -y) 
+
 -- get a unit vector (rounded heavily into Ints)
 vecUnit :: Vec2D -> Vec2D
 vecUnit (ix, iy) = (newX, newY)
