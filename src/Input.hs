@@ -9,8 +9,8 @@ where
 
 -- std libs:
 import qualified Data.Map as M
-import Data.Maybe   -- fromJust
-import Data.List    -- delete, find
+import Data.Maybe  (fromJust, isJust)
+import Data.List   (delete, find)
 -- import System.Random
 
 
@@ -121,7 +121,7 @@ getPlayer gs = head $ filter ft (gs^.creatures)
 monsterTurn :: Creature -> GameState -> GameState
 monsterTurn self gs = undefined
   where
-    playerPos = (getPlayer gs) ^?! mPlayerInfo
+    playerPos = getPlayer gs ^?! mPlayerInfo
 
 -- Return the Just Creature at the given location, or Nothing if there isn't one
 creatureAt :: GameState -> (Int, Int) -> Maybe Creature
