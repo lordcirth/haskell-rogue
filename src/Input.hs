@@ -112,20 +112,14 @@ playerTurn  action gs =
       --  (result^.gameState)
      result
 
-getPlayer :: GameState -> Creature
-getPlayer gs = head $ filter ft (gs^.creatures)
-  where
-    ft :: Creature -> Bool
-    ft c = isJust $ c ^. mPlayerInfo
-
 -- Monsters have no external input, only the game world
 monsterTurn :: Creature -> GameState -> GameState
-monsterTurn self gs =
+monsterTurn self gs = undefined
   -- Move towards the player
 
   where
     playerPos = getPlayer gs ^?! mPlayerInfo
-    selfPos = self ^. creatureInfo
+    selfPos = self ^. cInfo
     direction = vecUnit $ vecSub playerPos selfPos
 
 -- Return the Just Creature at the given location, or Nothing if there isn't one
