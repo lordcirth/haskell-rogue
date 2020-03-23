@@ -49,11 +49,12 @@ charMap gs =
 
 
 addPlayer :: GameState -> M.Map (Int, Int) Char -> M.Map (Int, Int) Char
-addPlayer gs chars =
-    M.insert playerLocation playerChar chars
+addPlayer gs =
+    M.insert playerLocation playerChar
     where
-        playerChar      = fromJust (gs ^? player.cInfo.cDisplay) -- what character to show
-        playerLocation  = fromJust (gs ^? player.cInfo.position) -- where to render it
+        player = getPlayer gs
+        playerChar      = player^.cInfo.cDisplay -- what character to show
+        playerLocation  = player^.cInfo.position -- where to render it
 
 
 addMonsters :: GameState -> M.Map (Int, Int) Char -> M.Map (Int, Int) Char
