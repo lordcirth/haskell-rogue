@@ -1,14 +1,6 @@
 -- TODO list:
 -- '-' is todo, '+' is done, '=' is notes
 
-+ Be able to attack (melee) and kill an enemy
-  + make an attack Action
-  + bind a key to it and test
-  + check for melee range
-  + make a damageMonster function
-    + Check for death on each hit
-  + make attempting to move into a monster instead attack
-
 - Stats system:
   + Add stats to Player in GameState
   + Make Stats a datatype deriving Ord
@@ -16,8 +8,6 @@
 
 - Enemy AI:
   - if in range, attack, else move toward player
-  + is there a way to generalize damage? Maybe make it over CreatureInfo?
-
 
 - Skill system:
   - create datatype 'Skill'
@@ -33,12 +23,9 @@
     = dice Rng numDice dieSize =
   - Should probably learn about monads
 
-
-- Creature refactor:
-  - Make the structure GS^.creatures
-  - Creature = CreatureInfo + Maybe Player, Maybe Monster
-  - therefore, can damage a Creature polymorphically - simplicity!
-  - But can still match player or monster-specific things
++ Creature refactor:
+  + Make the structure GS^.creatures
+  + Creature = CreatureInfo + Maybe Player, Maybe Monster
 
 = Theme/Design:
   = Save sci-fi for future, AP-based game
@@ -70,7 +57,7 @@
 
       = Control:
         = magical skill
-        = direct: 
+        = direct:
           = magic tohit?/cast chance?
           = + buff duration
         = skills: fancy stuff
@@ -93,7 +80,7 @@
 
           = PWR + CTL: Mage: ranged dps, utility
 
-          
+
 = Skill ideas:
   = Clairvoyant Strike:
     = bit of DEX, medium CTL?
