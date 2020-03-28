@@ -62,4 +62,5 @@ initialState initialRng = GameState    { _gameBoard    = boardGen (16, 16)
 forAllTilesDo :: (Tile -> Tile) -> (GameState -> GameState)
 forAllTilesDo func = over (gameBoard.tiles) (fmap func)
 
+getPlayer :: GameState -> Creature
 getPlayer gs = head $ filter (isPlayer) $ gs^.creatures

@@ -118,8 +118,8 @@ monsterTurn self gs = undefined
   -- Move towards the player
 
   where
-    playerPos = getPlayer gs ^?! mPlayerInfo
-    selfPos = self ^. cInfo
+    playerPos = (getPlayer gs ^?! cInfo)^.position :: Vec2D
+    selfPos = self ^. cInfo.position :: Vec2D
     direction = vecUnit $ vecSub playerPos selfPos
 
 -- Return the Just Creature at the given location, or Nothing if there isn't one
@@ -145,9 +145,9 @@ actionMove move gs
     --ActionResult  True (addMessage "player moved" resulting_gs)
     -- Return new gameState with message added
     where
-        playerPos       = player.cInfo.position      -- A lens, ie gs^.playerPos
-        resulting_gs    = over playerPos (addPos move) gs :: GameState
-        attempt         = addPos (gs^.player.cInfo.position) move   :: (Int, Int)
+        player            = getPlayer gs
+        resulting_player  = over (cInfo.position) (addPos move) player :: Creature
+        attempt           = addPos (player^.cInfo.position) move   :: (Int, Int)
 
         -- TODO: Safer checks than fromJust?
         targetTile      = fromJust $ M.lookup attempt (gs^.gameBoard.tiles)
